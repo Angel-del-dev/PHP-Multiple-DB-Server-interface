@@ -1,0 +1,8 @@
+:root {
+    --app-border-radius: 5px;
+    /* Shadows */
+    --generic-box-shadow: 2px 2px 2px 2px lightgray;
+    /* Colors */
+    --primary-bg-color: #b2b2e8;
+    --primary-color: black;
+}

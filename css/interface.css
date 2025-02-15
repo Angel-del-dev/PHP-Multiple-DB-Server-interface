@@ -1,0 +1,91 @@
+.dbinterface__maincontainer {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 0;
+}
+
+.dbinterface__db_selector,
+.dbinterface__db_manager {
+   height: 100%; 
+}
+
+.dbinterface__db_selector {
+    border: 1px solid teal;
+    flex-grow: 1;
+    max-width: 200px;
+
+}
+
+.dbinterface__db_manager {
+    border: 1px solid red;
+    flex-grow: 4;
+}
+
+.dbinterface__logoimage {
+    height: 20px;
+    width: 20px;
+}
+
+.dbinterface__db_selector > ul {
+    padding: 0; margin: 0;
+}
+
+.dbinterface__db_selector > ul li {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.dbinterface__db_selector > ul li > span {
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dbinterface__db_selector > ul li:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.dbinterface__editor {
+    width: 100%;
+    resize: none;
+    height: 100%;
+    border: 0;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+
+
+/* Buttons */
+
+[class|="btn"] {
+    border: 0;
+    padding: 10px;
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    border-radius: var(--app-border-radius);
+}
+
+[class|="btn"]:hover {
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-bg-color);
+    color: var(--primary-color);
+}
+
+
+/* Generic */
+
+.pointer:hover { cursor: pointer; }
