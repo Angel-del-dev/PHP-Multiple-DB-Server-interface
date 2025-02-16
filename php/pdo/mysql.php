@@ -47,6 +47,32 @@ class MysqlPdo {
         return new DBResult($this->connection->prepare($query));
     }
 
+    public function GetCharsets():array {
+        $charsets = [];
+
+        $sql = $this->newQuery('SHOW CHARACTER SET');
+        $data = $sql->Execute();
+
+        foreach($data as $charset) {
+            $charsets[] = [
+                'Charset' => $charset['Charset'],
+                'Description' => $charset['Description']
+            ];
+        }
+
+        return $charsets;
+    }
+
+    public function CreateDatabase(string $charset):string {
+        $db_name = uniqid();
+
+        $sql = $this->newQuery(sprintf("
+            CREATE DATABASE %s CHARACTER SET %s
+        ", $db_name, $charset));
+        $sql->Execute();
+        return $db_name;
+    }
+
     public function __destruct() {
         $this->connection = null;
     }

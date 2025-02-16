@@ -40,6 +40,25 @@ try {
             }
             $result['Databases'] = $Databases;
         break;
+        case 'GETDATABASECHARSETS':
+            $db = new DB($fields->database_type);
+            $result['Charsets'] = $db->GetCharsets();
+        break;
+        case 'CREATEDATABASE':
+            $db = new DB($fields->database_type);
+            $db_name = $db->CreateDatabase($fields->database_charset);
+
+            $db_parent = new DB();
+            $sql = $db->newQuery("
+                INSERT INTO DB_BY_HOST
+                (DB_NAME, DB_TYPE, WEB_DOMAIN)
+                VALUES
+                (:DB_NAME, :DB_TYPE, '')
+            ");
+            $sql->params->DB_NAME = $db_name;
+            $sql->params->DB_TYPE = $fields->database_type;
+            $sql->Execute();
+        break;
         default:
             $result = [ 'code' => 1, 'message' => "No se ha encontrado la opción '{$params->action}'" ];
         break;

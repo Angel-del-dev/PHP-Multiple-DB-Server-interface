@@ -21,6 +21,10 @@
 
 }
 
+.dbinterface__db_selector ul > li.active {
+    background-color: lightgray;
+}
+
 .dbinterface__db_manager {
     border: 1px solid red;
     flex-grow: 4;
@@ -102,3 +106,15 @@
 /* Generic */
 
 .pointer:hover { cursor: pointer; }
+
+/* Combobox */
+.combobox {
+    border: 1px solid lightgray;
+    border-radius: var(--app-border-radius);
+    padding: 5px;
+    font-size: 1em;
+}
+
+.combobox:focus {
+    outline: none;
+}

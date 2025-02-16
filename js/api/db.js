@@ -13,6 +13,8 @@ export const GetDatabases = async (MountRoute, { domain = null, language_server 
 
 export const RefreshDatabases = async (MountRoute, AppId, { domain = null, language_server = null} = {domain: null, language_server: null}) => {
     const db_selector_node = document.getElementById(`${AppId}_db_selector`);
+    db_selector_node.innerHTML = '';
+
     const Databases = await GetDatabases(MountRoute, { domain, language_server });
     db_selector_node.append(get_dbs_nodes(MountRoute, Databases));
 }

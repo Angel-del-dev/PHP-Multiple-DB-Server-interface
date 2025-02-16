@@ -33,4 +33,8 @@ class DB {
     public function newQuery(string $query) {
         return $this->connection->newQuery($query);
     }
+
+    // Inner functions
+    public function GetCharsets() { return $this->connection->GetCharsets(); }
+    public function CreateDatabase(string $charset) { return $this->connection->CreateDatabase($charset); }
 }

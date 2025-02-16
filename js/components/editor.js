@@ -9,7 +9,7 @@ const [ getActiveDatabase, setActiveDatabase ] = useState(null);
 const handle_execute = target => {
     if(getActiveDatabase() === null) return Alert({ text: `No puede ejecutar comandos.<br /><b>Motivo: </b>No ha seleccionado una base de datos` });
     // TODO Handle execute query correctly
-    Alert({ text: 'Ok' })
+    Alert({ text: `TODO: Ejecutar query<br /> ${target.value}` })
 };
 
 const handle_key_events = (e, _AppId) => {
@@ -26,9 +26,13 @@ const choose_db = (e, AppId) => {
     const selected_element = e.target.closest('li');
     if(selected_element === null) return;
     setActiveDatabase(selected_element.getAttribute('data-code'));
+
+    selected_element.closest('ul').querySelectorAll('li.active').forEach((li, _) => li.classList.remove('active'));
+
+    selected_element.classList.add('active');
 };
 
-export const create_editor = (AppId, node) => {
+export const create_editor = (MountRoute, AppId, node) => {
     // Editor creation
     const editor = document.createElement('textarea');
     editor.id = `${AppId}_editor`;
@@ -41,16 +45,16 @@ export const create_editor = (AppId, node) => {
     const db_selector = document.getElementById(`${AppId}_db_selector`);
     // db_selector events
     db_selector.addEventListener('click', e => choose_db(e, AppId));
-    db_selector.addEventListener('contextmenu', e => invoke_manager_contextmenu(e, AppId));
+    db_selector.addEventListener('contextmenu', e => invoke_manager_contextmenu(e, MountRoute, AppId));
 };
 
 
 // Events
 
-const invoke_manager_contextmenu = (e, AppId) => {
+const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
     e.preventDefault();
     const options = [];
-    options.push({ text: 'Nueva base de datos', callback: invoke_database_creation });
+    options.push({ text: 'Nueva base de datos', callback: () => invoke_database_creation(MountRoute, AppId) });
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };
 

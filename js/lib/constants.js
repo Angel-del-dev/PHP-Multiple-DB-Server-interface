@@ -8,3 +8,5 @@ export const logos = {
 export const keys = {
     F9: 'F9'
 };
+
+export const supported_database_types = {mysql: 'mysql.png', firebird: 'firebird.png', sqlite: 'sqlite.svg'};
