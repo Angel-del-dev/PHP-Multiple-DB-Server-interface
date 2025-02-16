@@ -65,6 +65,19 @@
     font-size: 1rem;
 }
 
+#dbinterface_popup {
+    display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: column;
+}
+
+#dbinterface_popup > span {
+    padding: 5px;
+    width: 100%;
+}
+
+#dbinterface_popup > span:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
 
 
 /* Buttons */
