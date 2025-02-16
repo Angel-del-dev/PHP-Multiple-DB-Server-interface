@@ -1,11 +1,11 @@
-# Generic DATABASE class
+# Language independent DB connector
 
 **Required**
 ```php
 require_once("{$MountRoute}/php/lib/db.php");
 ```
 
-**Instantiate**
+**Initialize**
 
 ```php
 $db = new DB();
