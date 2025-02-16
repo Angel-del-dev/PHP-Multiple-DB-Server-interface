@@ -37,4 +37,5 @@ class DB {
     // Inner functions
     public function GetCharsets() { return $this->connection->GetCharsets(); }
     public function CreateDatabase(string $charset) { return $this->connection->CreateDatabase($charset); }
+    public function DropDatabase(string $database) { return $this->connection->DropDatabase($database); }
 }

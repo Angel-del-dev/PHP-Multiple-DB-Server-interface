@@ -31,6 +31,7 @@ try {
             if(!is_null($fields->language_server)) $sql->params->DB_TYPE = strtoupper($fields->language_server);
             
             $res = $sql->Execute();
+            $sql->close();
             foreach($res as $row) {
                 $Databases[] = [
                     'Type' => $row['DB_TYPE'],
@@ -38,6 +39,7 @@ try {
                     'Code' => $row['DB_CODE'],
                 ];
             }
+        
             $result['Databases'] = $Databases;
         break;
         case 'GETDATABASECHARSETS':
@@ -58,6 +60,35 @@ try {
             $sql->params->DB_NAME = $db_name;
             $sql->params->DB_TYPE = $fields->database_type;
             $sql->Execute();
+            $sql->close();
+        break;
+        case 'DROPDATABASE':
+            $parent_db = new DB();
+            $get_db = $parent_db->newQuery('
+                SELECT DB_NAME, DB_TYPE
+                FROM DB_BY_HOST
+                WHERE DB_CODE = :DB_CODE
+            ');
+            $get_db->params->DB_CODE = $fields->Code;
+            $Database = $get_db->Execute();
+            $get_db->close();
+            if(count($Database) === 0) {
+                $result = [ 'code' => 1, 'message' => 'Given database does not exist' ];
+                break;
+            }
+            $Database = $Database[0];
+            
+            $db = new DB($Database['DB_TYPE']);
+            $db->DropDatabase($Database['DB_NAME']);
+            
+            $sql = $parent_db->newQuery('
+                DELETE
+                FROM DB_BY_HOST
+                WHERE DB_CODE = :DB_CODE
+            ');
+            $sql->params->DB_CODE = $fields->Code;
+            $sql->Execute();
+            $sql->close();
         break;
         default:
             $result = [ 'code' => 1, 'message' => "No se ha encontrado la opción '{$params->action}'" ];

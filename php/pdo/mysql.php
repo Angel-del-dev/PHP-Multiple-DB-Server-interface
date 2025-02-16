@@ -52,6 +52,7 @@ class MysqlPdo {
 
         $sql = $this->newQuery('SHOW CHARACTER SET');
         $data = $sql->Execute();
+        $sql->close();
 
         foreach($data as $charset) {
             $charsets[] = [
@@ -70,7 +71,16 @@ class MysqlPdo {
             CREATE DATABASE %s CHARACTER SET %s
         ", $db_name, $charset));
         $sql->Execute();
+        $sql->close();
         return $db_name;
+    }
+
+    public function DropDatabase(string $database):void {
+        $sql = $this->newQuery(sprintf("
+            DROP DATABASE IF EXISTS %s
+        ", $database));
+        $sql->Execute();
+        $sql->close();
     }
 
     public function __destruct() {

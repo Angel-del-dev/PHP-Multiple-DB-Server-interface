@@ -1,5 +1,5 @@
 import { supported_database_types } from "../lib/constants.js";
-import { Alert } from "./alerts.js";
+import { Alert, Confirm } from "./alerts.js";
 import { Combobox, CustomImage } from "./all.js";
 import { _create_generic_header, modal, _create_generic_footer } from "./modal.js";
 import { FetchPromise } from "../lib/utils.js";
@@ -99,5 +99,18 @@ const reset_charsets = async (MountRoute) => {
         option.append(document.createTextNode(`${Charset.Charset}: ${Charset.Description}`));
 
         charsets_node.append(option);
+    });
+};
+
+const confirm_drop_database = async (MountRoute, AppId, Code) => {
+    const { code, message } = await FetchPromise(MountRoute, { action: 'DROPDATABASE', fields: { Code } });
+    if(code != 0) return Alert({ text: message });
+    RefreshDatabases(MountRoute, AppId);
+}
+
+export const invoke_drop_database = async (MountRoute, AppId, li) => {
+    Confirm({
+        text: `¿Desea eliminar la base de datos '${li.querySelector('span').textContent}?', este proceso es irreversible`,
+        onConfirm: () => confirm_drop_database(MountRoute, AppId, li.getAttribute('data-code'))
     });
 };

@@ -2,7 +2,7 @@ import { keys } from "../lib/constants.js";
 import { useState } from "../lib/hooks.js";
 import { Alert } from "./alerts.js";
 import { create_contextmenu } from "./contextmenu.js";
-import { invoke_database_creation } from "./db.js";
+import { invoke_database_creation, invoke_drop_database } from "./db.js";
 
 const [ getActiveDatabase, setActiveDatabase ] = useState(null);
 
@@ -55,6 +55,9 @@ const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
     e.preventDefault();
     const options = [];
     options.push({ text: 'Nueva base de datos', callback: () => invoke_database_creation(MountRoute, AppId) });
+    if(e.target.closest('li') !== null) {
+        options.push({ text: 'Eliminar base de datos', callback: () => invoke_drop_database(MountRoute, AppId, e.target.closest('li')) });
+    }
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };
 
