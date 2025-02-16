@@ -3,7 +3,7 @@ import { logos } from "./constants.js";
 const create_logo_image = (MountRoute, Type) => {
     const logo_node = document.createElement('div');
     logo_node.classList.add('dbinterface__logoimage');
-    logo_node.style.backgroundImage = `url('${MountRoute}/${logos[Type]}')`;
+    logo_node.style.backgroundImage = `url('${MountRoute}/${logos[Type.toUpperCase()]}')`;
     logo_node.style.backgroundSize = 'cover';
     logo_node.style.backgroundRepeat = 'no-repeat';
 
@@ -16,6 +16,7 @@ export const get_dbs_nodes = (MountRoute, dbs) => {
     dbs.forEach((db, _) => {
         // TODO Check if a database type is not supported
         const list_element_node = document.createElement('li');
+        list_element_node.setAttribute('data-code', db.Code);
         list_element_node.title = db.Name;
         const element_span = document.createElement('span');
         element_span.append(document.createTextNode(db.Name));

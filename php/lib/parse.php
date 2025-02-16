@@ -15,4 +15,12 @@ class Parse {
 
         return $data;
     }
+
+    public static function Request():stdClass {
+        $req = json_decode(base64_decode($_REQUEST['id']));
+        
+        if(!isset($req->fields)) $req->fields = new stdClass();
+        
+        return $req;
+    }
 }

@@ -23,7 +23,7 @@ $db = new DB('mysql');
 
 # Example
 ```php
-$db = new MysqlPdo();
+$db = new DB('mysql');
 $query = $db->newQuery('select * from my_table where date = :date');
 $query->params->date = current_date;
 $data = $query->Execute();
