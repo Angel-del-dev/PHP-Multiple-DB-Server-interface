@@ -64,12 +64,26 @@ class MysqlPdo {
         return $charsets;
     }
 
-    public function CreateDatabase(string $charset):string {
+    public function GetCollations():array {
+        $collations = [];
+        $sql = $this->newQuery('SHOW COLLATION');
+        $data = $sql->Execute();
+        $sql->close();
+       
+        foreach($data as $collation) {
+            if(!isset($collations[$collation['Charset']])) $collations[$collation['Charset']] = [];
+            $collations[$collation['Charset']][] = $collation['Collation'];
+        }
+
+        return $collations;
+    }
+
+    public function CreateDatabase(string $collation):string {
         $db_name = uniqid();
 
         $sql = $this->newQuery(sprintf("
-            CREATE DATABASE %s CHARACTER SET %s
-        ", $db_name, $charset));
+            CREATE DATABASE %s COLLATE %s
+        ", $db_name, $collation));
         $sql->Execute();
         $sql->close();
         return $db_name;

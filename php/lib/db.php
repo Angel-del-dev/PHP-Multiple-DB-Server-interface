@@ -35,7 +35,8 @@ class DB {
     }
 
     // Inner functions
+    public function GetCollations() { return $this->connection->GetCollations(); }
     public function GetCharsets() { return $this->connection->GetCharsets(); }
-    public function CreateDatabase(string $charset) { return $this->connection->CreateDatabase($charset); }
+    public function CreateDatabase(string $collation) { return $this->connection->CreateDatabase($collation); }
     public function DropDatabase(string $database) { return $this->connection->DropDatabase($database); }
 }

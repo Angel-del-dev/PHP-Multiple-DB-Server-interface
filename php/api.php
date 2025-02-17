@@ -42,13 +42,17 @@ try {
         
             $result['Databases'] = $Databases;
         break;
+        case 'GETDATABASECOLLATIONS':
+            $db = new DB($fields->database_type);
+            $result['Collations'] = $db->GetCollations();
+        break;
         case 'GETDATABASECHARSETS':
             $db = new DB($fields->database_type);
             $result['Charsets'] = $db->GetCharsets();
         break;
         case 'CREATEDATABASE':
             $db = new DB($fields->database_type);
-            $db_name = $db->CreateDatabase($fields->database_charset);
+            $db_name = $db->CreateDatabase($fields->database_collation);
 
             $db_parent = new DB();
             $sql = $db->newQuery("
