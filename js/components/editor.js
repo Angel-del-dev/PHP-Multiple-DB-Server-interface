@@ -1,23 +1,29 @@
 import { keys } from "../lib/constants.js";
 import { useState } from "../lib/hooks.js";
+import { FetchPromise } from "../lib/utils.js";
 import { Alert } from "./alerts.js";
 import { create_contextmenu } from "./contextmenu.js";
 import { invoke_database_creation, invoke_drop_database } from "./db.js";
 
 const [ getActiveDatabase, setActiveDatabase ] = useState(null);
 
-const handle_execute = target => {
+const handle_execute = async (target, MountRoute) => {
     if(getActiveDatabase() === null) return Alert({ text: `No puede ejecutar comandos.<br /><b>Motivo: </b>No ha seleccionado una base de datos` });
     // TODO Handle execute query correctly
-    Alert({ text: `TODO: Ejecutar query<br /> ${target.value}` })
+    const Request = target.value.trim();
+    const { code, message, Result, Columns, Info } = await FetchPromise(MountRoute, { action: 'EXECUTE', fields: {DB: getActiveDatabase(), Request} });
+    if(code != 0) return Alert({ text: message });
+    console.log(Info);
+    console.log(Columns);
+    console.log(Result)
 };
 
-const handle_key_events = (e, _AppId) => {
+const handle_key_events = (e, _AppId, MountROute) => {
     const target = e.target.closest('textarea');
 
     switch(e.key) {
         case keys.F9:
-            handle_execute(target);
+            handle_execute(target, MountROute);
         break;
     }
 };
@@ -39,8 +45,8 @@ export const create_editor = (MountRoute, AppId, node) => {
     editor.classList.add('dbinterface__editor');
     node.append(editor);
     // Editor events
-    editor.addEventListener('keyup', e => handle_key_events(e, AppId));
-    editor.addEventListener('contextmenu', e => invoke_editor_contextmenu(e, AppId));
+    editor.addEventListener('keyup', e => handle_key_events(e, AppId, MountRoute));
+    editor.addEventListener('contextmenu', e => invoke_editor_contextmenu(e, AppId, MountRoute));
     // db_selector
     const db_selector = document.getElementById(`${AppId}_db_selector`);
     // db_selector events
@@ -61,10 +67,10 @@ const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };
 
-const invoke_editor_contextmenu = (e, AppId) => {
+const invoke_editor_contextmenu = (e, AppId, MountRoute) => {
     e.preventDefault();
     const options = [
-        { text: 'Ejecutar', callback: () => handle_execute(document.getElementById(`${AppId}_editor`)) }
+        { text: 'Ejecutar', callback: () => handle_execute(document.getElementById(`${AppId}_editor`), MountRoute) }
     ];
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };

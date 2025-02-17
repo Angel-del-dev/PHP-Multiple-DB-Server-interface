@@ -94,6 +94,72 @@ try {
             $sql->Execute();
             $sql->close();
         break;
+        case 'EXECUTE':
+            $upper_request = strtoupper($fields->Request);
+            if(str_contains($upper_request, 'CREATE DATABASE')) {
+                $result = [
+                    'code' => 1,
+                    'message' => 'No se puede crear una base de datos desde una query'
+                ];
+                break;
+            }
+
+            if(str_contains($upper_request, 'DROP DATABASE')) {
+                $result = [
+                    'code' => 1,
+                    'message' => 'No se puede eliminar una base de datos desde una query'
+                ];
+                break;
+            }
+
+
+            $parent_db = new DB();
+            $sql = $parent_db->newQuery('
+                SELECT *
+                FROM DB_BY_HOST
+                WHERE DB_CODE = :DB_CODE
+            ');
+            $sql->params->DB_CODE = $fields->DB;
+            $Data = $sql->Execute();
+            if(count($Data) === 0) {
+                $result = [
+                    'code' => 1,
+                    'message' => 'La base de datos no se ha encontrado'
+                ];
+                break;
+            }
+
+            $DB_TYPE = $Data[0]['DB_TYPE'];
+            $sql->close();
+            
+            $client_db = new DB($DB_TYPE);
+            $sql = $client_db->newQuery($fields->Request);
+            $Data = $sql->Execute();
+
+            $Columns = [];
+            $Result_data = [];
+
+            $i = 0;
+            foreach($Data as $row) {
+                if(++$i === 1) {
+                    foreach($row as $k => $v) {
+                        $Columns[] = [
+                            'Name' => $k,
+                            'Type' => gettype($v)
+                        ];
+                    }
+                }
+                $Result_data[] = array_values($row);
+            }
+
+            $result['Info'] = [
+                'RowCount' => "Nº de líneas: {$sql->rowCount}"
+            ];
+
+            $sql->close();
+            $result['Columns'] = $Columns;
+            $result['Result'] = $Result_data;
+        break;
         default:
             $result = [ 'code' => 1, 'message' => "No se ha encontrado la opción '{$params->action}'" ];
         break;

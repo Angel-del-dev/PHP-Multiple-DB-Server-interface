@@ -3,9 +3,11 @@
 class DBResult {
     protected $stmt;
     public stdClass $params;
+    public int $rowCount;
     public function __construct($stmt) {
         $this->stmt = $stmt;
         $this->params = new stdClass();
+        $this->rowCount = 0;
     }
 
     public function Debug():void {
@@ -14,6 +16,7 @@ class DBResult {
 
     public function Execute():array {
         $result = $this->stmt->execute((array)$this->params);
+        $this->rowCount = $this->stmt->rowCount();
         return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
