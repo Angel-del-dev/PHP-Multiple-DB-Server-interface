@@ -96,6 +96,7 @@ try {
         break;
         case 'EXECUTE':
             $upper_request = strtoupper($fields->Request);
+            // TODO: Handle Language independent create and drop
             if(str_contains($upper_request, 'CREATE DATABASE')) {
                 $result = [
                     'code' => 1,
