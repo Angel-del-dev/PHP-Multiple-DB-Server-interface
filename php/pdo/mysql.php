@@ -100,6 +100,14 @@ class MysqlPdo {
         $sql->close();
     }
 
+    public function GetCreateDatabasePrefix() {
+        return 'CREATE DATABASE';
+    }
+
+    public function GetDropDatabasePrefix() {
+        return 'DROP DATABASE';
+    }
+
     public function __destruct() {
         $this->connection = null;
     }

@@ -11,6 +11,7 @@ const handle_execute = async (target, MountRoute) => {
     if(getActiveDatabase() === null) return Alert({ text: `No puede ejecutar comandos.<br /><b>Motivo: </b>No ha seleccionado una base de datos` });
     // TODO Handle execute query correctly
     const Request = target.value.trim();
+    if(Request === '') return;
     const { code, message, Result, Columns, Info } = await FetchPromise(MountRoute, { action: 'EXECUTE', fields: {DB: getActiveDatabase(), Request} });
     if(code != 0) return Alert({ text: message });
     console.log(Info);

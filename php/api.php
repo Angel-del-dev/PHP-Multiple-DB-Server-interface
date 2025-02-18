@@ -96,23 +96,6 @@ try {
         break;
         case 'EXECUTE':
             $upper_request = strtoupper($fields->Request);
-            // TODO: Handle Language independent create and drop
-            if(str_contains($upper_request, 'CREATE DATABASE')) {
-                $result = [
-                    'code' => 1,
-                    'message' => 'No se puede crear una base de datos desde una query'
-                ];
-                break;
-            }
-
-            if(str_contains($upper_request, 'DROP DATABASE')) {
-                $result = [
-                    'code' => 1,
-                    'message' => 'No se puede eliminar una base de datos desde una query'
-                ];
-                break;
-            }
-
 
             $parent_db = new DB();
             $sql = $parent_db->newQuery('
@@ -134,6 +117,23 @@ try {
             $sql->close();
             
             $client_db = new DB($DB_TYPE);
+
+            if(str_contains($upper_request, $client_db->GetCreateDatabasePrefix())) {
+                $result = [
+                    'code' => 1,
+                    'message' => 'No se puede crear una base de datos desde una query'
+                ];
+                break;
+            }
+
+            if(str_contains($upper_request, $client_db->GetDropDatabasePrefix())) {
+                $result = [
+                    'code' => 1,
+                    'message' => 'No se puede eliminar una base de datos desde una query'
+                ];
+                break;
+            }
+
             $sql = $client_db->newQuery($fields->Request);
             $Data = $sql->Execute();
 
