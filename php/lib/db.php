@@ -11,11 +11,16 @@ class DB {
         $this->language_server = $language_server;
         $this->setupConnection();
     }
-    public function setCredentials(string $dbhost, string $dbname, string $dbuser, string $dbpassword) {
+    public function setCredentials(string $dbhost, string $dbname, string $dbuser, string $dbpassword):void {
         $this->env->dbhost = $dbhost;
         $this->env->dbname = $dbname;
         $this->env->dbuser = $dbuser;
         $this->env->dbpassword = $dbpassword;
+    }
+
+    public function setConnectionParameter(string $key, string $value):void {
+        $this->env->$key = $value;
+        $this->setupConnection();
     }
 
     private function setupConnection() {

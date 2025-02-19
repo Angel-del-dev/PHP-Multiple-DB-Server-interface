@@ -72,7 +72,7 @@ const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
 const invoke_editor_contextmenu = (e, AppId, MountRoute) => {
     e.preventDefault();
     const options = [
-        { text: 'Ejecutar', callback: () => handle_execute(document.getElementById(`${AppId}_editor`), MountRoute) }
+        { text: 'Ejecutar', callback: () => handle_execute(e.target, MountRoute) }
     ];
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };

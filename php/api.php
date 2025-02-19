@@ -114,9 +114,11 @@ try {
             }
 
             $DB_TYPE = $Data[0]['DB_TYPE'];
+            $DB_NAME = $Data[0]['DB_NAME'];
             $sql->close();
             
             $client_db = new DB($DB_TYPE);
+            $client_db->setConnectionParameter('dbname', $DB_NAME);
 
             if(str_contains($upper_request, $client_db->GetCreateDatabasePrefix())) {
                 $result = [
