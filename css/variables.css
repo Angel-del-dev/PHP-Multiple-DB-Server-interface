@@ -5,4 +5,6 @@
     /* Colors */
     --primary-bg-color: #b2b2e8;
     --primary-color: black;
+
+    --editor-tab-header-height: 40px;
 }

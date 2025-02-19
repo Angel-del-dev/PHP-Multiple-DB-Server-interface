@@ -15,7 +15,7 @@
 }
 
 .dbinterface__db_selector {
-    border: 1px solid teal;
+    border: 1px solid lightgray;
     flex-grow: 1;
     max-width: 200px;
 
@@ -26,7 +26,7 @@
 }
 
 .dbinterface__db_manager {
-    border: 1px solid red;
+    border: 1px solid lightgray;
     flex-grow: 4;
 }
 
@@ -58,6 +58,56 @@
 .dbinterface__db_selector > ul li:hover {
     background-color: lightgray;
     cursor: pointer;
+}
+
+#dbinterface_tabsheader {
+    width: 100%;
+    height: var(--editor-tab-header-height);    
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    user-select: none;
+}
+
+#dbinterface_tabsheader .tab_toggler {
+    width: fit-content;
+    height: 100%;
+    padding: 10px;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+#dbinterface_tabsheader .tab_toggler:not(.active):hover {
+    cursor: pointer;
+}
+
+#dbinterface_tabsheader .tab_toggler i {
+    height: fit-content;
+    padding: 5px;
+}
+
+#dbinterface_tabsheader .tab_toggler.active {
+    background-color: white;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+}
+
+#dbinterface_tabbody {
+    width: 100%;
+    height: calc(100% - var(--editor-tab-header-height));
+}
+
+#dbinterface_tabbody .tabs_body {
+    width: 100%;
+    height: 100%;
+}
+
+#dbinterface_tabbody .tabs_body:not(.active) {
+    display: none;
 }
 
 .dbinterface__editor {
@@ -116,5 +166,11 @@
 }
 
 .combobox:focus {
+    outline: none;
+}
+
+/* Textarea */
+
+textarea:focus {
     outline: none;
 }
