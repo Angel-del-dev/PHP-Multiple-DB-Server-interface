@@ -14,7 +14,6 @@ export const get_dbs_nodes = (MountRoute, dbs) => {
     const list_node = document.createElement('ul');
 
     dbs.forEach((db, _) => {
-        // TODO Check if a database type is not supported
         const list_element_node = document.createElement('li');
         list_element_node.setAttribute('data-code', db.Code);
         list_element_node.title = db.Name;
