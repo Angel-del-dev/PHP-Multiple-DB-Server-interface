@@ -104,6 +104,16 @@
 #dbinterface_tabbody .tabs_body {
     width: 100%;
     height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#dbinterface_tabbody .tabs_body > * {
+    flex-grow: 1;
 }
 
 #dbinterface_tabbody .tabs_body:not(.active) {
@@ -131,6 +141,47 @@
 #dbinterface_popup > span:hover {
     background-color: lightgray;
     cursor: pointer;
+}
+
+.editor__result_wrapper {
+    width: 100%;
+    height: 40vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.editor__result_wrapper > div {
+    background-color: white;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.editor__result_wrapper > div:nth-of-type(1) {
+    flex-grow: 2;
+}
+
+.editor__result_wrapper > div:nth-of-type(2) {
+    flex-grow: 1;
+}
+
+.editor__result_wrapper > .editor__info > ul {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.editor__result_wrapper > .editor__info > ul > li {
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.editor__result_wrapper > .editor__info > ul > li:nth-of-type(2n) {
+    background-color: lightgray;
 }
 
 

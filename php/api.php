@@ -1,5 +1,8 @@
 <?php
 
+// TODO Dont allow DB User creation or remove
+// TODO Dont allow SHOW DATABASES
+
 if(!$_REQUEST) header('Location: /');
 
 require_once(__DIR__.'../lib/parse.php');
@@ -156,7 +159,9 @@ try {
             }
 
             $result['Info'] = [
-                'RowCount' => "Nº de líneas: {$sql->rowCount}"
+                'RowCount' => "Nº de líneas: {$sql->rowCount}",
+                'Date' => 'Fecha ejecución: '.date('d/m/Y'),
+                'Time' => 'Hora ejecución: '.date('H:i:s')
             ];
 
             $sql->close();

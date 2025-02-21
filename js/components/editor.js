@@ -119,7 +119,29 @@ const handle_execute = async (target, MountRoute) => {
     // TODO Show output
     console.log(Info);
     console.log(Columns);
-    console.log(Result)
+    console.log(Result);
+
+    const result_wrapper = document.createElement('div');
+    result_wrapper.classList.add('editor__result_wrapper');
+
+    const result_container = document.createElement('div');
+    result_container.classList.add('editor__result');
+
+    const info_container = document.createElement('div');
+    info_container.classList.add('editor__info');
+
+    // Info panel
+    const ul = document.createElement('ul');
+    Object.keys(Info).forEach((k, _) => {
+        const li = document.createElement('li');
+        li.append(document.createTextNode(Info[k]));
+        ul.append(li);
+    });
+
+    info_container.append(ul);
+
+    result_wrapper.append(result_container, info_container);
+    target.parentNode.append(result_wrapper);
 };
 
 const handle_key_events = (e, _AppId, MountROute) => {
