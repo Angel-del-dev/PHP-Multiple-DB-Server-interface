@@ -160,6 +160,7 @@
 
 .editor__result_wrapper > div:nth-of-type(1) {
     flex-grow: 2;
+    max-width: 80%;
 }
 
 .editor__result_wrapper > div:nth-of-type(2) {
@@ -224,4 +225,36 @@
 
 textarea:focus {
     outline: none;
+}
+
+/* Grid */
+
+table.grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+table.grid,
+table.grid th,
+table.grid tr,
+table.grid td {
+    border: 1px solid lightgray;
+}
+
+table.grid > thead {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    border: 1px solid lightgray;
+    top: 0;
+}
+
+table.grid > thead > tr > th,
+table.grid > tbody > tr > td {
+    padding: 5px 10px;
+}
+
+table.grid > tbody > tr:nth-of-type(2n) {
+    background-color: lightgray;
 }

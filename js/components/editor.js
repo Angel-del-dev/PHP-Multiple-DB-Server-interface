@@ -4,6 +4,7 @@ import { FetchPromise, makeid } from "../lib/utils.js";
 import { Alert } from "./alerts.js";
 import { create_contextmenu } from "./contextmenu.js";
 import { invoke_database_creation, invoke_drop_database } from "./db.js";
+import { create_grid } from "./grid.js";
 
 const [ getActiveDatabase, setActiveDatabase ] = useState(null);
 const UNIQID_SIZE = 11;
@@ -110,16 +111,14 @@ const switch_tab = e => {
 // Regular events
 
 const handle_execute = async (target, MountRoute) => {
+    target.parentNode.querySelector('.editor__result_wrapper')?.remove();
+
     if(getActiveDatabase() === null) return Alert({ text: `No puede ejecutar comandos.<br /><b>Motivo: </b>No ha seleccionado una base de datos` });
 
     const Request = target.value.trim();
     if(Request === '') return;
     const { code, message, Result, Columns, Info } = await FetchPromise(MountRoute, { action: 'EXECUTE', fields: {DB: getActiveDatabase(), Request} });
     if(code != 0) return Alert({ text: message });
-    // TODO Show output
-    console.log(Info);
-    console.log(Columns);
-    console.log(Result);
 
     const result_wrapper = document.createElement('div');
     result_wrapper.classList.add('editor__result_wrapper');
@@ -139,6 +138,11 @@ const handle_execute = async (target, MountRoute) => {
     });
 
     info_container.append(ul);
+
+    // Result container
+    const grid = create_grid({ columns_info: Columns });
+    grid.AddRows(Result);
+    grid.Draw(result_container);
 
     result_wrapper.append(result_container, info_container);
     target.parentNode.append(result_wrapper);
