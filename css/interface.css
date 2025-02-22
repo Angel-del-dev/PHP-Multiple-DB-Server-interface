@@ -259,3 +259,13 @@ table.grid > tbody > tr > td {
 table.grid > tbody > tr:nth-of-type(2n) {
     background-color: lightgray;
 }
+
+table.grid > thead > tr > th {
+    text-align: left;
+}
+
+table.grid > thead > tr > th:has(i) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
