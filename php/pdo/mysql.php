@@ -108,6 +108,56 @@ class MysqlPdo {
         return 'DROP DATABASE';
     }
 
+    public function GetAllTables():array {
+        $sql = $this->newQuery('SHOW TABLES');
+        $Data = $sql->Execute();
+        $sql->close();
+        $result = [];
+        foreach($Data as $row) { $result[] = array_values($row)[0]; }
+        return $result;
+    }
+
+    public function GetAllProcedures():array {
+        $sql = $this->newQuery('SHOW PROCEDURE STATUS');
+        $Data = $sql->Execute();
+        $sql->close();
+        $result = [];
+        foreach($Data as $row) $result[] = $row['Name'];
+        return $result;
+    }
+
+    public function GetAllFunctions():array {
+        $sql = $this->newQuery('SHOW FUNCTION STATUS');
+        $Data = $sql->Execute();
+        $sql->close();
+        $result = [];
+        foreach($Data as $row) { $result[] = $row['Name']; }
+        return $result;
+    }
+
+    public function GetAllTriggers():array {
+        // ACTION_STATEMENT -> trigger DDL
+        $sql = $this->newQuery('
+            SELECT TRIGGER_NAME
+            FROM INFORMATION_SCHEMA.TRIGGERS
+        ');
+        $Data = $sql->Execute();
+        $sql->close();
+        $result = [];
+        foreach($Data as $row) { $result[] = $row['TRIGGER_NAME']; }
+        return $result;
+    }
+
+    public function GetDatabaseInfo():stdClass {
+        $Info = new stdClass();
+        $Info->Tablas = $this->GetAllTables();
+        $Info->Procedimientos = $this->GetAllProcedures();
+        $Info->Funciones = $this->GetAllFunctions();
+        $Info->Triggers = $this->GetAllTriggers();
+
+        return $Info;
+    }
+
     public function __destruct() {
         $this->connection = null;
     }

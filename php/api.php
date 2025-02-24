@@ -8,6 +8,19 @@ if(!$_REQUEST) header('Location: /');
 require_once(__DIR__.'../lib/parse.php');
 require_once(__DIR__.'../lib/db.php');
 
+function GetDatabaseInfo(int $Code):array {
+    $db = new DB();
+    $sql = $db->newQuery('
+        SELECT *
+        FROM DB_BY_HOST
+        WHERE DB_CODE = :DB_CODE
+    ');
+    $sql->params->DB_CODE = $Code;
+    $Data = $sql->Execute();
+    $sql->close();
+    return $Data;
+}
+
 $result = [ 'code' => 0, 'message' => '' ];
 
 try {
@@ -167,6 +180,17 @@ try {
             $sql->close();
             $result['Columns'] = $Columns;
             $result['Result'] = $Result_data;
+        break;
+        case 'GETDATABASEINFO':
+            $Data = GetDatabaseInfo($fields->Database);
+            if(count($Data) === 0) {
+                $result = ['code' => 1, 'message' => 'No se ha encontrado la base de datos indicada'];
+                break;
+            }
+            $Row = $Data[0];
+            $db = new DB($Row['DB_TYPE']);
+            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $result['Info'] = $db->GetDatabaseInfo();
         break;
         default:
             $result = [ 'code' => 1, 'message' => "No se ha encontrado la opción '{$params->action}'" ];

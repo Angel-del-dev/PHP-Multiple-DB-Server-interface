@@ -48,4 +48,5 @@ class DB {
     public function DropDatabase(string $database) { return $this->connection->DropDatabase($database); }
     public function GetCreateDatabasePrefix() { return $this->connection->GetCreateDatabasePrefix(); }
     public function GetDropDatabasePrefix() { return $this->connection->GetDropDatabasePrefix(); }
+    public function GetDatabaseInfo() { return $this->connection->GetDatabaseInfo(); }
 }

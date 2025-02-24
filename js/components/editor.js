@@ -3,8 +3,9 @@ import { useState } from "../lib/hooks.js";
 import { FetchPromise, makeid } from "../lib/utils.js";
 import { Alert } from "./alerts.js";
 import { create_contextmenu } from "./contextmenu.js";
-import { invoke_database_creation, invoke_drop_database } from "./db.js";
+import { invoke_database_creation, invoke_drop_database, } from "./db.js";
 import { create_grid } from "./grid.js";
+import { get_db_info_nodes } from "../lib/db.js";
 
 const [ getActiveDatabase, setActiveDatabase ] = useState(null);
 const UNIQID_SIZE = 11;
@@ -24,16 +25,16 @@ const create_tabs_container = () => {
     return container;
 };
 
-export const create_tabs_system = (MountRoute, AppId, ParentNode) => {
+export const create_tabs_system = (MountRoute, AppId, ParentNode, head_text = '') => {
     ParentNode.append(
-        create_tabs_header(),
+        create_tabs_header(head_text),
         create_tabs_container()
     );
 
     // db_selector
     const db_selector = document.getElementById(`${AppId}_db_selector`);
     // db_selector events
-    db_selector.addEventListener('click', e => choose_db(e, AppId));
+    db_selector.addEventListener('click', e => choose_db(e, AppId, MountRoute));
     db_selector.addEventListener('contextmenu', e => invoke_manager_contextmenu(e, MountRoute, AppId));
 
     document.addEventListener('keydown', e => {
@@ -159,13 +160,22 @@ const handle_key_events = (e, _AppId, MountROute) => {
     }
 };
 
-const choose_db = (e, AppId) => {
+const choose_db = async (e, AppId, MountRoute) => {
+    if(e.target.closest('#databases-list') === null) return;
     const selected_element = e.target.closest('li');
     if(selected_element === null) return;
-    setActiveDatabase(selected_element.getAttribute('data-code'));
 
+    const Database = selected_element.getAttribute('data-code');
+
+    const { code, message, Info } = await FetchPromise(MountRoute, { action: 'GETDATABASEINFO', fields: { Database } });
+    if(code != 0) return Alert({ text: message });
+
+    const nodes = get_db_info_nodes(MountRoute, Info);
+    document.getElementById(`${AppId}_db_selector`).append(nodes);
+    document.getElementById(`databases-list`)?.classList.add('d-none');
+    
+    setActiveDatabase(Database);
     selected_element.closest('ul').querySelectorAll('li.active').forEach((li, _) => li.classList.remove('active'));
-
     selected_element.classList.add('active');
 };
 
@@ -181,6 +191,7 @@ const handle_special_events = (e, MountRoute, AppId) => {
 // Context menu events
 
 const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
+    if(e.target.closest('#databases-list') === null) return;
     e.preventDefault();
     const options = [];
     options.push({ text: 'Nueva base de datos', callback: () => invoke_database_creation(MountRoute, AppId) });
