@@ -124,7 +124,7 @@ try {
             if(count($Data) === 0) {
                 $result = [
                     'code' => 1,
-                    'message' => 'La base de datos no se ha encontrado'
+                    'message' => 'The given database does not exist'
                 ];
                 break;
             }
@@ -139,7 +139,7 @@ try {
             if(str_contains($upper_request, $client_db->GetCreateDatabasePrefix())) {
                 $result = [
                     'code' => 1,
-                    'message' => 'No se puede crear una base de datos desde una query'
+                    'message' => 'Command "database creation" not allowed'
                 ];
                 break;
             }
@@ -147,7 +147,7 @@ try {
             if(str_contains($upper_request, $client_db->GetDropDatabasePrefix())) {
                 $result = [
                     'code' => 1,
-                    'message' => 'No se puede eliminar una base de datos desde una query'
+                    'message' => 'Command "database removal" not allowed'
                 ];
                 break;
             }
@@ -172,9 +172,9 @@ try {
             }
 
             $result['Info'] = [
-                'RowCount' => "Nº de líneas: {$sql->rowCount}",
-                'Date' => 'Fecha ejecución: '.date('d/m/Y'),
-                'Time' => 'Hora ejecución: '.date('H:i:s')
+                'RowCount' => "Nº of results: {$sql->rowCount}",
+                'Date' => 'Execution date: '.date('d/m/Y'),
+                'Time' => 'Execution time: '.date('H:i:s')
             ];
 
             $sql->close();
@@ -184,7 +184,7 @@ try {
         case 'GETDATABASEINFO':
             $Data = GetDatabaseInfo($fields->Database);
             if(count($Data) === 0) {
-                $result = ['code' => 1, 'message' => 'No se ha encontrado la base de datos indicada'];
+                $result = ['code' => 1, 'message' => 'The given database was not found'];
                 break;
             }
             $Row = $Data[0];
@@ -193,7 +193,7 @@ try {
             $result['Info'] = $db->GetDatabaseInfo();
         break;
         default:
-            $result = [ 'code' => 1, 'message' => "No se ha encontrado la opción '{$params->action}'" ];
+            $result = [ 'code' => 1, 'message' => "The option '{$params->action}' is not supported" ];
         break;
     }
 

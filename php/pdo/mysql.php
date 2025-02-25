@@ -150,9 +150,9 @@ class MysqlPdo {
 
     public function GetDatabaseInfo():stdClass {
         $Info = new stdClass();
-        $Info->Tablas = $this->GetAllTables();
-        $Info->Procedimientos = $this->GetAllProcedures();
-        $Info->Funciones = $this->GetAllFunctions();
+        $Info->Tables = $this->GetAllTables();
+        $Info->Procedures = $this->GetAllProcedures();
+        $Info->Functions = $this->GetAllFunctions();
         $Info->Triggers = $this->GetAllTriggers();
 
         return $Info;

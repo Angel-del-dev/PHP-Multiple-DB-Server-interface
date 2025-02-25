@@ -66,7 +66,7 @@ const create_db_creation_footer = (MountRoute, AppId) => {
 
 const create_db_creation_modal = (MountRoute, AppId) => {
     const modal_body = modal({
-        minwidth: '60vmin', title: 'Crear base de datos'
+        minwidth: '60vmin', title: 'New database'
     });
 
     modal_body.append(
@@ -117,7 +117,7 @@ const confirm_drop_database = async (MountRoute, AppId, Code) => {
 
 export const invoke_drop_database = async (MountRoute, AppId, li) => {
     Confirm({
-        text: `¿Desea eliminar la base de datos '${li.querySelector('span').textContent}?', este proceso es irreversible`,
+        text: `¿Would you like to remove the database '${li.querySelector('span').textContent}?'<br />This process cannot be undone`,
         onConfirm: () => confirm_drop_database(MountRoute, AppId, li.getAttribute('data-code'))
     });
 };

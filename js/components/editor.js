@@ -114,7 +114,7 @@ const switch_tab = e => {
 const handle_execute = async (target, MountRoute) => {
     target.parentNode.querySelector('.editor__result_wrapper')?.remove();
 
-    if(getActiveDatabase() === null) return Alert({ text: `No puede ejecutar comandos.<br /><b>Motivo: </b>No ha seleccionado una base de datos` });
+    if(getActiveDatabase() === null) return Alert({ text: `Query could not be executed.<br />No database has been selected` });
 
     const Request = target.value.trim();
     if(Request === '') return;
@@ -147,6 +147,7 @@ const handle_execute = async (target, MountRoute) => {
     grid.Draw(result_container);
 
     result_wrapper.append(result_container, info_container);
+
     target.parentNode.append(result_wrapper);
 };
 
@@ -194,9 +195,9 @@ const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
     if(e.target.closest('#databases-list') === null) return;
     e.preventDefault();
     const options = [];
-    options.push({ text: 'Nueva base de datos', callback: () => invoke_database_creation(MountRoute, AppId) });
+    options.push({ text: 'New database', callback: () => invoke_database_creation(MountRoute, AppId) });
     if(e.target.closest('li') !== null) {
-        options.push({ text: 'Eliminar base de datos', callback: () => invoke_drop_database(MountRoute, AppId, e.target.closest('li')) });
+        options.push({ text: 'Remove database', callback: () => invoke_drop_database(MountRoute, AppId, e.target.closest('li')) });
     }
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };
@@ -204,8 +205,8 @@ const invoke_manager_contextmenu = (e, MountRoute, AppId) => {
 const invoke_editor_contextmenu = (e, AppId, MountRoute) => {
     e.preventDefault();
     const options = [
-        { text: 'Ejecutar', callback: () => handle_execute(e.target, MountRoute) },
-        { text: 'Abrir consulta nueva', callback: () => create_editor(MountRoute, AppId) },
+        { text: 'Execute', callback: () => handle_execute(e.target, MountRoute) },
+        { text: 'Open new query', callback: () => create_editor(MountRoute, AppId) },
     ];
     create_contextmenu(AppId, e.clientX, e.clientY, options);
 };

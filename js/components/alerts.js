@@ -3,7 +3,7 @@ import { _close_modal, _create_generic_footer, _create_generic_header, modal } f
 const _create_modal = (body, footer) => {
     const modal_node = modal({
         width: '50vmin', minheight: '20vmin',
-        title: 'Aviso'
+        title: 'Notification'
     });
     modal_node.append(body, footer);
 };
@@ -22,7 +22,7 @@ export const Alert = (
         text = '', 
         onExit = null,
         confirm_icon = 'fa-solid fa-check',
-        confirm_text = 'Entendido', 
+        confirm_text = 'Confirm', 
     }
 ) => {
     _create_modal(
@@ -37,9 +37,9 @@ export const Confirm = (
         onConfirm = null,
         onCancel = null,
         confirm_icon = 'fa-solid fa-check',
-        confirm_text = 'Entendido', 
+        confirm_text = 'Confirm', 
         cancel_icon = 'fa-solid fa-xmark',
-        cancel_text = 'Cancelar', 
+        cancel_text = 'Cancel', 
     }
 ) => {
     const footer_node = document.createElement('div');
