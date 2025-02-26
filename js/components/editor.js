@@ -27,6 +27,21 @@ const create_tabs_container = () => {
     return container;
 };
 
+const refresh_editor_available_databases = () => {
+    document.querySelectorAll(`.dbinterface__db_manager select.editor_database_selector`).forEach((select, _) => {
+        select.innerHTML = '';
+        const databases_list = document.getElementById('databases-list');
+        select.append(document.createElement('option'));
+        getActiveDatabases().forEach((code, i) => {
+            const option = document.createElement('option');
+            const caption = databases_list.querySelector(`[data-code="${code}"]`).title;
+            option.value = code;
+            option.append(document.createTextNode(caption));
+            select.append(option);
+        });
+    });
+};
+
 export const create_tabs_system = (MountRoute, AppId, ParentNode, head_text = '') => {
     ParentNode.append(
         create_tabs_header(head_text),
@@ -110,6 +125,7 @@ export const create_editor = (MountRoute, AppId) => {
     // Editor events
     editor.addEventListener('keyup', e => handle_key_events(e, AppId, MountRoute));
     editor.addEventListener('contextmenu', e => invoke_editor_contextmenu(e, AppId, MountRoute));
+    refresh_editor_available_databases();
 };
 
 const switch_tab = e => {
@@ -208,18 +224,7 @@ const choose_db = async (e, AppId, MountRoute) => {
     setActiveDatabases(Databases);
     selected_element.classList.add('active');
 
-    document.querySelectorAll(`.dbinterface__db_manager select.editor_database_selector`).forEach((select, _) => {
-        select.innerHTML = '';
-        const databases_list = document.getElementById('databases-list');
-        select.append(document.createElement('option'));
-        getActiveDatabases().forEach((code, i) => {
-            const option = document.createElement('option');
-            const caption = databases_list.querySelector(`[data-code="${code}"]`).title;
-            option.value = code;
-            option.append(document.createTextNode(caption));
-            select.append(option);
-        });
-    });
+    refresh_editor_available_databases();
 };
 
 const handle_special_events = (e, MountRoute, AppId) => {
