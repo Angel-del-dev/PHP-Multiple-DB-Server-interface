@@ -24,8 +24,8 @@
     overflow-x: hidden;
 }
 
-.dbinterface__db_selector ul > li.active {
-    background-color: lightgray;
+.dbinterface__db_selector ul > li.active > span {
+    font-weight: bold;
 }
 
 .dbinterface__db_manager {
@@ -43,7 +43,7 @@
     height: 100%;
 }
 
-.dbinterface__db_selector > #databases-list li {
+.dbinterface__db_selector > #databases-list li > span {
     padding: 5px;
     display: flex;
     justify-content: flex-start;
@@ -52,14 +52,7 @@
     width: 100%;
 }
 
-.dbinterface__db_selector > #databases-list li > span {
-    width: 80%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dbinterface__db_selector > #databases-list li:hover {
+.dbinterface__db_selector > #databases-list li:hover > span {
     background-color: lightgray;
     cursor: pointer;
 }
@@ -276,40 +269,38 @@ table.grid > thead > tr > th:has(i) {
 }
 
 /* Database info */
-#info-list {
-    padding: 5px 10px;
+.info-list,
+.info-list ul {
     list-style: none;
-    height: 100%;
-}
-
-#info-list ul {
-    padding: 0;
-    list-style: none;
-}
-
-#info-list li span {
-    font-weight: bold;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 5px;
-}
-
-#info-list li span:hover {
-    cursor: pointer;
-}
-
-#info-list li li {
     padding: 5px 5px;
+    margin: 0;
 }
 
-#info-list li li:hover {
-    background-color: lightgray;
-    cursor: pointer;
+.info-list ul {
+    padding: 5px 10px;
 }
 
-#info-list li {
+.info-list ul li {
+    width: 100%;
+    text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+}
+
+.info-list ul li:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: blue;
+}
+
+/* Editor navbar */
+
+.query-editor-navbar {
+    width: 100%;
+    flex-grow: 1;
+    height: 5vmin;
+}
+
+.query-editor-navbar select {
+    width: 10vmin;
 }

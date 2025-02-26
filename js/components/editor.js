@@ -6,8 +6,10 @@ import { create_contextmenu } from "./contextmenu.js";
 import { invoke_database_creation, invoke_drop_database, } from "./db.js";
 import { create_grid } from "./grid.js";
 import { get_db_info_nodes } from "../lib/db.js";
+import { GetDatabases } from "../api/db.js";
+import { Combobox } from "./all.js";
 
-const [ getActiveDatabase, setActiveDatabase ] = useState(null);
+const [ getActiveDatabases, setActiveDatabases ] = useState([]);
 const UNIQID_SIZE = 11;
 
 // Tabs
@@ -83,12 +85,27 @@ const create_tab = (head_text) => {
 
 export const create_editor = (MountRoute, AppId) => {
     const node = create_tab('Query');
+    // Editor navbar
+    const navbar = document.createElement('div');
+    navbar.classList.add('query-editor-navbar');
+
+    const selector = Combobox({
+        id: makeid(11)
+    });
+    selector.style.width = 'fit-content';
+    selector.style.minWidth = '10vmin';
+    selector.classList.add('editor_database_selector');
+    selector.addEventListener('change', e => {
+        e.target.closest('.tabs_body.active')?.querySelector('.editor__result_wrapper')?.remove();
+    });
+    selector.title = 'Current database';
+    navbar.append(selector);
     // Editor creation
     const editor = document.createElement('textarea');
     // editor.id = `${AppId}_editor`;
     editor.classList.add('dbinterface__editor');
     
-    node.append(editor);
+    node.append(navbar, editor);
 
     // Editor events
     editor.addEventListener('keyup', e => handle_key_events(e, AppId, MountRoute));
@@ -114,11 +131,13 @@ const switch_tab = e => {
 const handle_execute = async (target, MountRoute) => {
     target.parentNode.querySelector('.editor__result_wrapper')?.remove();
 
-    if(getActiveDatabase() === null) return Alert({ text: `Query could not be executed.<br />No database has been selected` });
-
     const Request = target.value.trim();
     if(Request === '') return;
-    const { code, message, Result, Columns, Info } = await FetchPromise(MountRoute, { action: 'EXECUTE', fields: {DB: getActiveDatabase(), Request} });
+
+    if(getActiveDatabases().length === 0) return Alert({ text: `Query could not be executed.<br />No database is active` });
+    const chosen_database = document.querySelector('#dbinterface_tabbody .tabs_body.active .editor_database_selector').value;
+    if(chosen_database === '') return Alert({ text: `No database has been selected for the current editor instance` });
+    const { code, message, Result, Columns, Info } = await FetchPromise(MountRoute, { action: 'EXECUTE', fields: {DB: chosen_database, Request} });
     if(code != 0) return Alert({ text: message });
 
     const result_wrapper = document.createElement('div');
@@ -162,6 +181,13 @@ const handle_key_events = (e, _AppId, MountROute) => {
 };
 
 const choose_db = async (e, AppId, MountRoute) => {
+    if(e.target.closest('li') === null) return;
+    const database_info = e.target.closest('li')?.querySelector('ul');
+    if( database_info !== null ) {
+        if(database_info.classList.contains('d-none')) database_info.classList.remove('d-none');
+        else database_info.classList.add('d-none');
+        return;
+    }
     if(e.target.closest('#databases-list') === null) return;
     const selected_element = e.target.closest('li');
     if(selected_element === null) return;
@@ -172,12 +198,28 @@ const choose_db = async (e, AppId, MountRoute) => {
     if(code != 0) return Alert({ text: message });
 
     const nodes = get_db_info_nodes(MountRoute, Info);
-    document.getElementById(`${AppId}_db_selector`).append(nodes);
-    document.getElementById(`databases-list`)?.classList.add('d-none');
-    
-    setActiveDatabase(Database);
-    selected_element.closest('ul').querySelectorAll('li.active').forEach((li, _) => li.classList.remove('active'));
+
+    e.target.closest('li').append(nodes);
+
+    // Change the way setActiveDatabasess Work
+    const Databases = getActiveDatabases();
+
+    if(Databases.indexOf(Database) < 0) Databases.push(Database);
+    setActiveDatabases(Databases);
     selected_element.classList.add('active');
+
+    document.querySelectorAll(`.dbinterface__db_manager select.editor_database_selector`).forEach((select, _) => {
+        select.innerHTML = '';
+        const databases_list = document.getElementById('databases-list');
+        select.append(document.createElement('option'));
+        getActiveDatabases().forEach((code, i) => {
+            const option = document.createElement('option');
+            const caption = databases_list.querySelector(`[data-code="${code}"]`).title;
+            option.value = code;
+            option.append(document.createTextNode(caption));
+            select.append(option);
+        });
+    });
 };
 
 const handle_special_events = (e, MountRoute, AppId) => {
