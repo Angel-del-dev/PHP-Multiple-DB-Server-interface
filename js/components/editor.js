@@ -145,6 +145,7 @@ const switch_tab = e => {
 // Regular events
 
 const handle_execute = async (target, MountRoute) => {
+    // TODO Handle selection execute
     target.parentNode.querySelector('.editor__result_wrapper')?.remove();
 
     const Request = target.value.trim();
