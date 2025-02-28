@@ -114,7 +114,10 @@ class MysqlPdo {
         $unauthorizedQueryBits = [
             $this->GetCreateDatabasePrefix() => 'Command "database creation" not allowed',
             $this->GetDropDatabasePrefix() => 'Command "database removal" not allowed',
-            'USE' => 'Keyword "USE" is not allowed'
+            'USE' => 'Keyword "USE" is not allowed',
+            'SHOW DATABASES' => 'Command "show databases" not allowed',
+            'CREATE USER' => 'Command "user creation" not allowed',
+            'DROP USER' => 'Command "user removal" not allowed'
         ];
 
         $queryString = strtoupper($queryString);

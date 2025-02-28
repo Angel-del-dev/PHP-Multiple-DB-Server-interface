@@ -1,7 +1,6 @@
 <?php
 
 // TODO Dont allow DB User creation or remove
-// TODO Dont allow SHOW DATABASES
 
 if(!$_REQUEST) header('Location: /');
 
