@@ -64,10 +64,19 @@ export const get_db_info_nodes = (MountRoute, Info) => {
             section_li.setAttribute('data-key', k);
             section_li.setAttribute('data-value', Col);
             section_li.append(document.createTextNode(Col));
+
+            section_li.addEventListener('dblclick', e => show_section_info(e.target.closest('li')));
+
             section_ul.append(section_li);
         });
         li.append(SectionName, section_ul);
         ul.append(li);
     });
     return ul;
+};
+
+const show_section_info = async li => {
+    const Section = li.getAttribute('data-key');
+    const Data = li.getAttribute('data-value');
+    console.log(Section, Data);
 };

@@ -59,7 +59,7 @@ export const create_tabs_system = (MountRoute, AppId, ParentNode, head_text = ''
     });
 };
 
-const create_tab = (head_text) => {
+export const create_tab = (head_text) => {
     const uniqid = makeid(UNIQID_SIZE);
 
     const tabs_header = document.getElementById('dbinterface_tabsheader');
@@ -199,6 +199,7 @@ const handle_key_events = (e, _AppId, MountROute) => {
 
 const choose_db = async (e, AppId, MountRoute) => {
     if(e.target.closest('li') === null) return;
+    if(e.target.closest('span') === null) return;
     const database_info = e.target.closest('li')?.querySelector('ul');
     if( database_info !== null ) {
         if(database_info.classList.contains('d-none')) database_info.classList.remove('d-none');
