@@ -36,3 +36,30 @@ export const GetSelectionFromElement = element => {
 
   return selected_text;
 };
+
+export const timeUnits = ( ms ) => {
+  if ( !Number.isInteger(ms) ) return 'NaN';
+  const allocate = msUnit => {
+      const units = Math.trunc(ms / msUnit)
+      ms -= units * msUnit
+      return units
+  }
+  const legend =  {
+      // Can be improved adding a unit worth of milliseconds
+      days: allocate(86400000),
+      hours: allocate(3600000),
+      minutes: allocate(60000),
+      seconds: allocate(1000),
+      milliseconds: ms
+  }
+
+  let text = '';
+
+  Object.keys(legend).forEach((k, _) => {
+    if(legend[k] > 0) {
+      text += ` ${legend[k]} ${k}`;
+    }
+  });
+
+  return text.trim();
+}
