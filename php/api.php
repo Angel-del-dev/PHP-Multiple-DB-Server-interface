@@ -136,19 +136,9 @@ try {
             $client_db = new DB($DB_TYPE);
             $client_db->setConnectionParameter('dbname', $DB_NAME);
 
-            if(str_contains($upper_request, $client_db->GetCreateDatabasePrefix())) {
-                $result = [
-                    'code' => 1,
-                    'message' => 'Command "database creation" not allowed'
-                ];
-                break;
-            }
-
-            if(str_contains($upper_request, $client_db->GetDropDatabasePrefix())) {
-                $result = [
-                    'code' => 1,
-                    'message' => 'Command "database removal" not allowed'
-                ];
+            $error_msg = $client_db->CheckUnauthorizedQueryStrings($upper_request);
+            if(strlen(trim($error_msg)) > 0) {
+                $result = ['code' => 1, 'message' => $error_msg];
                 break;
             }
 

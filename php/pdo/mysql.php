@@ -108,6 +108,24 @@ class MysqlPdo {
         return 'DROP DATABASE';
     }
 
+    public function CheckUnauthorizedQueryStrings(string $queryString):string {
+        $error_msg = '';
+
+        $unauthorizedQueryBits = [
+            $this->GetCreateDatabasePrefix() => 'Command "database creation" not allowed',
+            $this->GetDropDatabasePrefix() => 'Command "database removal" not allowed',
+            'USE' => 'Keyword "USE" is not allowed'
+        ];
+
+        $queryString = strtoupper($queryString);
+
+        foreach($unauthorizedQueryBits as $queryBit => $message) {
+            if(str_contains($queryString, $queryBit)) $error_msg .= "<br />{$message}";
+        }
+
+        return $error_msg;
+    }
+
     public function GetAllTables():array {
         $sql = $this->newQuery('SHOW TABLES');
         $Data = $sql->Execute();

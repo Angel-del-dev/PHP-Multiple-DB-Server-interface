@@ -46,6 +46,7 @@ class DB {
     public function GetCharsets() { return $this->connection->GetCharsets(); }
     public function CreateDatabase(string $collation) { return $this->connection->CreateDatabase($collation); }
     public function DropDatabase(string $database) { return $this->connection->DropDatabase($database); }
+    public function CheckUnauthorizedQueryStrings(string $queryString):string { return $this->connection->CheckUnauthorizedQueryStrings($queryString); }
     public function GetCreateDatabasePrefix() { return $this->connection->GetCreateDatabasePrefix(); }
     public function GetDropDatabasePrefix() { return $this->connection->GetDropDatabasePrefix(); }
     public function GetDatabaseInfo() { return $this->connection->GetDatabaseInfo(); }
