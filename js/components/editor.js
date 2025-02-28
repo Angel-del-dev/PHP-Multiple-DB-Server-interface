@@ -1,6 +1,6 @@
 import { keys } from "../lib/constants.js";
 import { useState } from "../lib/hooks.js";
-import { FetchPromise, makeid } from "../lib/utils.js";
+import { FetchPromise, GetSelectionFromElement, makeid } from "../lib/utils.js";
 import { Alert } from "./alerts.js";
 import { create_contextmenu } from "./contextmenu.js";
 import { invoke_database_creation, invoke_drop_database, } from "./db.js";
@@ -144,11 +144,10 @@ const switch_tab = e => {
 
 // Regular events
 
-const handle_execute = async (target, MountRoute) => {
-    // TODO Handle selection execute
+const handle_execute = async (target, MountRoute, execute_selection_only = false) => {
     target.parentNode.querySelector('.editor__result_wrapper')?.remove();
 
-    const Request = target.value.trim();
+    const Request = execute_selection_only ? GetSelectionFromElement(target) : target.value.trim();
     if(Request === '') return;
 
     if(getActiveDatabases().length === 0) return Alert({ text: `Query could not be executed.<br />No database is active` });
@@ -187,12 +186,17 @@ const handle_execute = async (target, MountRoute) => {
     target.parentNode.append(result_wrapper);
 };
 
+/**
+ * 
+ * If key === F9 && ctrlKey === true: It will execute the entire script
+ * If key === F9 && ctrlKey === false: It will execute the selected script 
+ */
 const handle_key_events = (e, _AppId, MountROute) => {
     const target = e.target.closest('textarea');
 
     switch(e.key) {
         case keys.F9:
-            handle_execute(target, MountROute);
+            handle_execute(target, MountROute, !e.ctrlKey);
         break;
     }
 };
@@ -255,6 +259,7 @@ const invoke_editor_contextmenu = (e, AppId, MountRoute) => {
     e.preventDefault();
     const options = [
         { text: 'Execute', callback: () => handle_execute(e.target, MountRoute) },
+        { text: 'Execute selection', callback: () => handle_execute(e.target, MountRoute, true) },
         { text: 'Open new query', callback: () => create_editor(MountRoute, AppId) },
     ];
     create_contextmenu(AppId, e.clientX, e.clientY, options);

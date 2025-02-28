@@ -25,3 +25,14 @@ export const makeid = length => {
     }
     return result;
 };
+
+export const GetSelectionFromElement = element => {
+  let selected_text = element.value.trim();
+
+  if(element.selectionStart !== undefined) {
+    const { selectionStart, selectionEnd } = element;
+    selected_text = element.value.trim().substring(selectionStart, selectionEnd);
+  }
+
+  return selected_text;
+};
