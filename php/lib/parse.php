@@ -3,8 +3,11 @@
 class Parse {
     public static function ENV():stdClass {
         $data = new stdClass();
-        // TODO Add controls for the .env
-        $env = explode("\n", file_get_contents(__dir__.'../../../.env'));
+        $route = __dir__.'../../../.env';
+
+        if(!file_exists($route)) throw new Error('Enviroment variables are not set, please create them');
+        
+        $env = explode("\n", file_get_contents($route));
 
 
         foreach($env as $parameter) {

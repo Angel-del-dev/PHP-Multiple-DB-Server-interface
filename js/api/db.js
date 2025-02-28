@@ -5,7 +5,7 @@ import { get_dbs_nodes } from "../lib/db.js"
 export const GetDatabases = async (MountRoute, { domain = null, language_server = null} = {domain: null, language_server: null}) => {
     const { code, message, Databases } = await FetchPromise(MountRoute, { action: 'GETDATABASES', fields: { language_server, domain } });
     if(code != 0) {
-        Alert(message);
+        Alert({ text: message });
         return [];
     }
     return Databases;

@@ -2,8 +2,6 @@
 
 require_once("{$_SERVER['DOCUMENT_ROOT']}/interface/php/lib/parse.php");
 
-// TODO restrict command SHOW DATABASES
-
 class DB {
     protected stdClass $env;
     protected string $language_server;

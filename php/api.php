@@ -1,7 +1,5 @@
 <?php
 
-// TODO Dont allow DB User creation or remove
-
 if(!$_REQUEST) header('Location: /');
 
 require_once(__DIR__.'../lib/parse.php');
