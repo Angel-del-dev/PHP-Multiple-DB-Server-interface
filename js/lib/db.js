@@ -48,10 +48,10 @@ export const get_db_info_nodes = (MountRoute, Info) => {
             icon.classList.remove('fa-square-plus');
             icon.classList.remove('fa-square-minus');
             if(IsHidden) {
-                icon.classList.add('fa-square-plus');
+                icon.classList.add('fa-square-minus');
                 sub_list.classList.add('d-none');
             }else {
-                icon.classList.add('fa-square-minus');
+                icon.classList.add('fa-square-plus');
                 sub_list.classList.remove('d-none');
             }
         });
