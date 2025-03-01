@@ -1,3 +1,5 @@
+export const UNIQID_SIZE = 11;
+
 const logo_path = 'img/logo';
 export const logos = {
     SQLITE: `${logo_path}/sqlite.svg`,

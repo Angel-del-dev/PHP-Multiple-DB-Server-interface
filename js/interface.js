@@ -1,5 +1,6 @@
 import { RefreshDatabases } from "./api/db.js";
-import { create_editor, create_tabs_system } from "./components/editor.js";
+import { create_editor } from "./components/editor.js";
+import { create_tabs_system } from "./components/tabs.js";
 
 export const Main = async ({ MountRoute, AppId }) => {
     const db_manager_node = document.getElementById(`${AppId}_db_manager`)
