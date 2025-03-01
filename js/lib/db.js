@@ -86,5 +86,5 @@ const show_section_info = async (MountRoute, li) => {
     const { code, message, Info } = await FetchPromise(MountRoute, { action: 'SHOWSECTIONINFO', fields: { Database, Section, Data } });
     if(code != 0) return Alert({ text: message });
 
-    create_section_preview(Info);
+    create_section_preview(Data, Info);
 };

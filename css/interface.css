@@ -207,6 +207,19 @@
 .pointer:hover { cursor: pointer; }
 .d-none { display: none !important; }
 
+/* Pre && Code */
+pre {
+    margin: 0;
+    padding: 0;
+}
+
+code {
+    width: 100%;
+    font-size: 1.1rem;
+    display: inline-block;
+    white-space: pre-wrap;
+}
+
 /* Combobox */
 .combobox {
     border: 1px solid lightgray;
@@ -303,4 +316,64 @@ table.grid > thead > tr > th:has(i) {
 
 .query-editor-navbar select {
     width: 10vmin;
+}
+
+/* Schema */
+
+.dbinterface-section-schema {
+    width: 100%;
+    height: 100%;
+
+    background-color: white;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: start;
+    gap: 0;
+}
+
+.dbinterface-section-schema > div {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.dbinterface-section-navigator {
+    min-width: 100px;
+    max-width: 100px;
+    flex: 1;
+    border-right: 1px solid lightgray;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.dbinterface-section-navigator-body {
+    flex: 3;
+}
+
+.dbinterface-section-navigator > span {
+    padding: 10px;
+    width: 100%;
+}
+
+.dbinterface-section-navigator > span.active {
+    background-color: lightgray;
+}
+
+.dbinterface-section-navigator > span:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.dbinterface-section-navigator-body > div:not(.d-none) {
+    width: 100%;
+    height: 100%;
+}
+
+.dbinterface-section-navigator-body > div * {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
 }

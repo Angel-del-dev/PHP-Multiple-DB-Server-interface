@@ -200,6 +200,8 @@ class MysqlPdo {
         $sections = [ 'TABLES' => 'TABLE', 'PROCEDURES' => 'PROCEDURE', 'FUNCTIONS' => 'FUNCTION'];
 
         $data->DDL = $this->GetDDL($sections[strtoupper($section)], $requested_data);
+        $data->SCHEMA = [];
+        
 
         return $data;
     }
