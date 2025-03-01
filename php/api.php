@@ -20,6 +20,8 @@ function GetDatabaseInfo(int $Code):array {
 
 $result = [ 'code' => 0, 'message' => '' ];
 
+// TODO Rework api system to be inside of a api/ directory with specific cases
+
 try {
     $params = Parse::Request();
     $fields = $params->fields;
@@ -178,6 +180,17 @@ try {
             $db = new DB($Row['DB_TYPE']);
             $db->setConnectionParameter('dbname', $Row['DB_NAME']);
             $result['Info'] = $db->GetDatabaseInfo();
+        break;
+        case 'SHOWSECTIONINFO':
+            $Data = GetDatabaseInfo($fields->Database);
+            if(count($Data) === 0) {
+                $result = ['code' => 1, 'message' => 'The given database was not found'];
+                break;
+            }
+            $Row = $Data[0];
+            $db = new DB($Row['DB_TYPE']);
+            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $result['Info'] = $db->GetSectionData($fields->Section, $fields->Data);
         break;
         default:
             $result = [ 'code' => 1, 'message' => "The option '{$params->action}' is not supported" ];

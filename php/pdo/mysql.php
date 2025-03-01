@@ -100,11 +100,11 @@ class MysqlPdo {
         $sql->close();
     }
 
-    public function GetCreateDatabasePrefix() {
+    public function GetCreateDatabasePrefix():string {
         return 'CREATE DATABASE';
     }
 
-    public function GetDropDatabasePrefix() {
+    public function GetDropDatabasePrefix():string {
         return 'DROP DATABASE';
     }
 
@@ -177,6 +177,31 @@ class MysqlPdo {
         $Info->Triggers = $this->GetAllTriggers();
 
         return $Info;
+    }
+
+    protected function GetDDL(string $section, string $requested_data):string {
+        $ddl = '';
+
+        $sql = $this->newQuery(sprintf('
+            SHOW CREATE %s %s
+        ', $section, $requested_data));
+        $Data = $sql->Execute();
+        if(count($Data) > 0) {
+            $ddl = $Data[0]['Create '.ucfirst(strtolower($section))];
+        }
+
+        $sql->close();
+
+        return $ddl;
+    }
+
+    public function GetSectionData(string $section, string $requested_data):stdClass {
+        $data = new stdClass();
+        $sections = [ 'TABLES' => 'TABLE', 'PROCEDURES' => 'PROCEDURE', 'FUNCTIONS' => 'FUNCTION'];
+
+        $data->DDL = $this->GetDDL($sections[strtoupper($section)], $requested_data);
+
+        return $data;
     }
 
     public function __destruct() {

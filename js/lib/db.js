@@ -1,4 +1,7 @@
+import { Alert } from "../components/alerts.js";
+import { create_section_preview } from "../components/section.js";
 import { logos } from "./constants.js";
+import { FetchPromise } from "./utils.js";
 
 const create_logo_image = (MountRoute, Type) => {
     const logo_node = document.createElement('div');
@@ -65,7 +68,7 @@ export const get_db_info_nodes = (MountRoute, Info) => {
             section_li.setAttribute('data-value', Col);
             section_li.append(document.createTextNode(Col));
 
-            section_li.addEventListener('dblclick', e => show_section_info(e.target.closest('li')));
+            section_li.addEventListener('dblclick', e => show_section_info(MountRoute, e.target.closest('li')));
 
             section_ul.append(section_li);
         });
@@ -75,8 +78,13 @@ export const get_db_info_nodes = (MountRoute, Info) => {
     return ul;
 };
 
-const show_section_info = async li => {
+const show_section_info = async (MountRoute, li) => {
+    const Database = li.closest('[data-code]').getAttribute('data-code');
     const Section = li.getAttribute('data-key');
     const Data = li.getAttribute('data-value');
-    console.log(Section, Data);
+
+    const { code, message, Info } = await FetchPromise(MountRoute, { action: 'SHOWSECTIONINFO', fields: { Database, Section, Data } });
+    if(code != 0) return Alert({ text: message });
+
+    create_section_preview(Info);
 };
