@@ -1,9 +1,12 @@
 class Grid {
-    #columns_info; #data;
+    #columns_info; #data; #allow_html_rendering;
     constructor({ columns_info = [] }) {
         this.#columns_info = columns_info;
         this.#data = [];
+        this.#allow_html_rendering = false;
     }
+
+    AllowHtmlRendering() { this.#allow_html_rendering = true; }
 
     AddRows(data) { this.#data = data; }
 
@@ -14,7 +17,7 @@ class Grid {
         const table = document.createElement('table');
         table.classList.add('grid');
         table.append(create_grid_header(self, this.#columns_info));
-        table.append(create_grid_values(this.#columns_info, this.#data));
+        table.append(create_grid_values(this.#columns_info, this.#data, this.#allow_html_rendering));
 
         container_node.append(table);
     }
@@ -69,7 +72,7 @@ const create_grid_header = (grid_obj, columns) => {
     return thead;
 };
 
-const create_grid_values = (columns, rows) => {
+const create_grid_values = (columns, rows, allow_html_rendering) => {
     const tbody = document.createElement('tbody');
 
     rows.map(row => {
@@ -77,7 +80,8 @@ const create_grid_values = (columns, rows) => {
         row.forEach((column, j) => {
             const td = document.createElement('td');
             td.style.textAlign = columns[j].Type === 'string' ? 'right' : 'left';
-            td.append(document.createTextNode(column));
+            if(!allow_html_rendering) td.append(document.createTextNode(column));
+            else td.innerHTML = column;
             tr.append(td);
         });
         tbody.append(tr);

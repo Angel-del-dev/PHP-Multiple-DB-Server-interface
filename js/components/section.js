@@ -82,9 +82,10 @@ const create_ddl_tab = (div, creation_string) => {
 
 const create_schema_tab = (div, { Columns, Data }) => {
     const grid = create_grid({ columns_info: Columns });
+    grid.AllowHtmlRendering();
     grid.AddRows(Data);
     grid.Draw(div);
 
-    div.querySelector('table').style.height = 'fit-content';
+    // div.querySelector('table').style.height = 'fit-content';
     div.style.overflowY = 'auto';
 };

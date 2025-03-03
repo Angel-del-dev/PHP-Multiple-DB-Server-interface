@@ -199,9 +199,11 @@ class MysqlPdo {
         $data = new stdClass();
 
         $sql = $this->newQuery('
-            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT 
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE TABLE_NAME = :TABLE_NAME; 
+            SELECT T1.COLUMN_NAME, T1.DATA_TYPE, T1.IS_NULLABLE, T1.COLUMN_DEFAULT, T2.TABLE_NAME, T2.CONSTRAINT_NAME, T2.REFERENCED_TABLE_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS T1
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE T2 ON T1.TABLE_NAME = T2.TABLE_NAME AND T1.COLUMN_NAME = T2.COLUMN_NAME
+            WHERE T1.TABLE_NAME = :TABLE_NAME
+            ORDER BY T1.ORDINAL_POSITION ASC 
         ');
         $sql->params->TABLE_NAME = $requested_data;
         $Info = $sql->Execute();
@@ -216,8 +218,20 @@ class MysqlPdo {
         $data->Data = [];
 
         foreach($Info as $result) {
+            $Col_Name = $result['COLUMN_NAME'];
+            if($result['CONSTRAINT_NAME'] !== '') {
+                $Color = 'gold';
+                $Title = '';
+                if($result['CONSTRAINT_NAME'] !== 'PRIMARY') {
+                    $Color = 'lightgray';
+                    $Title = "Referenced table: {$result['REFERENCED_TABLE_NAME']}";
+                }
+                $Icon = "<i class='fa-solid fa-key fa-xs' style='color: {$Color};' title='{$Title}'></i>";
+                $Col_Name .= $Icon;
+                $Col_Name = "<div style='width: fit-content;display: flex; justify-content: flex-start; align-items: center; gap: 5px;'>{$Col_Name}</div>";
+            }
             $data->Data[] = [
-                $result['COLUMN_NAME'],
+                $Col_Name,
                 $result['DATA_TYPE'],
                 $result['IS_NULLABLE'],
                 $result['COLUMN_DEFAULT']
