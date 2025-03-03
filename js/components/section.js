@@ -1,3 +1,4 @@
+import { create_grid } from "./grid.js";
 import { create_tab } from "./tabs.js";
 
 /**
@@ -56,7 +57,7 @@ const create_navigator_body = Info => {
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-navigator-body');
 
-    const navigator_options = { DDL: create_ddl_tab };
+    const navigator_options = { DDL: create_ddl_tab, SCHEMA: create_schema_tab };
 
     Object.keys(Info).forEach((key, i) => {
         const div = document.createElement('div');
@@ -77,4 +78,13 @@ const create_ddl_tab = (div, creation_string) => {
     code.append(document.createTextNode(creation_string));
     pre.append(code);
     div.append(pre);
+};
+
+const create_schema_tab = (div, { Columns, Data }) => {
+    const grid = create_grid({ columns_info: Columns });
+    grid.AddRows(Data);
+    grid.Draw(div);
+
+    div.querySelector('table').style.height = 'fit-content';
+    div.style.overflowY = 'auto';
 };

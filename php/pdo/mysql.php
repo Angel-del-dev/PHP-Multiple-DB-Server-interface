@@ -195,12 +195,44 @@ class MysqlPdo {
         return $ddl;
     }
 
+    public function GetSchema(string $requested_data):stdClass {
+        $data = new stdClass();
+
+        $sql = $this->newQuery('
+            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_NAME = :TABLE_NAME; 
+        ');
+        $sql->params->TABLE_NAME = $requested_data;
+        $Info = $sql->Execute();
+        $sql->close();
+
+        $data->Columns = [
+            ['Name' => 'Column Name', 'Type' => 'string'],
+            ['Name' => 'Data Type', 'Type' => 'string'],
+            ['Name' => 'Is Null', 'Type' => 'string'],
+            ['Name' => 'Default Value', 'Type' => 'string'],
+        ];
+        $data->Data = [];
+
+        foreach($Info as $result) {
+            $data->Data[] = [
+                $result['COLUMN_NAME'],
+                $result['DATA_TYPE'],
+                $result['IS_NULLABLE'],
+                $result['COLUMN_DEFAULT']
+            ];
+        }
+
+        return $data;
+    }
+
     public function GetSectionData(string $section, string $requested_data):stdClass {
         $data = new stdClass();
         $sections = [ 'TABLES' => 'TABLE', 'PROCEDURES' => 'PROCEDURE', 'FUNCTIONS' => 'FUNCTION'];
 
+        if(in_array(strtoupper($section), ['TABLES'])) $data->SCHEMA = $this->GetSchema($requested_data);
         $data->DDL = $this->GetDDL($sections[strtoupper($section)], $requested_data);
-        $data->SCHEMA = [];
         
 
         return $data;
