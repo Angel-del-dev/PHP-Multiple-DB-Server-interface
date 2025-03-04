@@ -22,7 +22,7 @@ export const create_section_preview = (section, Info) => {
 const create_navigator_head = names => {
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-navigator');
-
+    // TODO Obtain rows when clicking 'DATA'
     names.forEach((name, i) => {
         const span = document.createElement('span');
         span.append(document.createTextNode(name));
@@ -57,7 +57,7 @@ const create_navigator_body = Info => {
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-navigator-body');
 
-    const navigator_options = { DDL: create_ddl_tab, SCHEMA: create_schema_tab };
+    const navigator_options = { DDL: create_ddl_tab, SCHEMA: create_schema_tab, DATA: create_data_tab };
 
     Object.keys(Info).forEach((key, i) => {
         const div = document.createElement('div');
@@ -88,4 +88,8 @@ const create_schema_tab = (div, { Columns, Data }) => {
 
     // div.querySelector('table').style.height = 'fit-content';
     div.style.overflowY = 'auto';
+};
+
+const create_data_tab = () => {
+
 };
