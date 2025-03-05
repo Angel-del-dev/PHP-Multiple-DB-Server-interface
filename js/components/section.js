@@ -6,15 +6,15 @@ import { create_tab } from "./tabs.js";
  * Do not destructure Info in the parameters
  * It is needed to load the list of names
  */
-export const create_section_preview = (section, Info) => {
+export const create_section_preview = (Database, section, Info, MountRoute) => {
     const node = create_tab(`${section} schema`);
-    
+    node.setAttribute('database', Database);
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-schema');
 
     container.append(
         create_navigator_head(Object.keys(Info)),
-        create_navigator_body(Info)
+        create_navigator_body(Database, Info, section, MountRoute)
     );
     node.append(container);
 };
@@ -22,7 +22,6 @@ export const create_section_preview = (section, Info) => {
 const create_navigator_head = names => {
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-navigator');
-    // TODO Obtain rows when clicking 'DATA'
     names.forEach((name, i) => {
         const span = document.createElement('span');
         span.append(document.createTextNode(name));
@@ -53,18 +52,20 @@ const create_navigator_head = names => {
     return container;
 };
 
-const create_navigator_body = Info => {
+const create_navigator_body = (Database, Info, Section, MountRoute) => {
     const container = document.createElement('div');
     container.classList.add('dbinterface-section-navigator-body');
 
     const navigator_options = { DDL: create_ddl_tab, SCHEMA: create_schema_tab, DATA: create_data_tab };
+
+    const additional_info = {Database, Section, MountRoute};
 
     Object.keys(Info).forEach((key, i) => {
         const div = document.createElement('div');
         if(i > 0) div.classList.add('d-none');
         div.setAttribute('data-name', key);
 
-        if(navigator_options[key] !== undefined) navigator_options[key](div, Info[key]);
+        if(navigator_options[key] !== undefined) navigator_options[key](div, Info[key], additional_info);
 
         container.append(div);
     });
@@ -72,7 +73,7 @@ const create_navigator_body = Info => {
     return container;
 };
 
-const create_ddl_tab = (div, creation_string) => {
+const create_ddl_tab = (div, creation_string, Additional) => {
     const pre = document.createElement('pre');
     const code = document.createElement('code');
     code.append(document.createTextNode(creation_string));
@@ -80,7 +81,7 @@ const create_ddl_tab = (div, creation_string) => {
     div.append(pre);
 };
 
-const create_schema_tab = (div, { Columns, Data }) => {
+const create_schema_tab = (div, { Columns, Data }, Additional) => {
     const grid = create_grid({ columns_info: Columns });
     grid.AllowHtmlRendering();
     grid.AddRows(Data);
@@ -90,6 +91,11 @@ const create_schema_tab = (div, { Columns, Data }) => {
     div.style.overflowY = 'auto';
 };
 
-const create_data_tab = () => {
-
+const create_data_tab = (div, { Columns, Data }, {Database, Section, MountRoute}) => {
+    const grid = create_grid({ columns_info: Columns });
+    grid.AllowHtmlRendering();
+    grid.AddRows(Data);
+    grid.FetchTableDataOnFinished(Database, Section, MountRoute);
+    grid.Draw(div);
+    div.style.overflowY = 'auto';
 };

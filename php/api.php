@@ -192,6 +192,17 @@ try {
             $db->setConnectionParameter('dbname', $Row['DB_NAME']);
             $result['Info'] = $db->GetSectionData($fields->Section, $fields->Data);
         break;
+        case 'GETSLICEFROMTABLE':
+            $Data = GetDatabaseInfo($fields->Database);
+            if(count($Data) === 0) {
+                $result = ['code' => 1, 'message' => 'The given database was not found'];
+                break;
+            }
+            $Row = $Data[0];
+            $db = new DB($Row['DB_TYPE']);
+            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $result['Data'] = $db->GetSliceFromTable($fields->Table, $fields->Offset, $fields->ChunkSize);
+        break;
         default:
             $result = [ 'code' => 1, 'message' => "The option '{$params->action}' is not supported" ];
         break;

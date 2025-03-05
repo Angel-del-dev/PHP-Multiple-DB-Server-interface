@@ -241,14 +241,39 @@ class MysqlPdo {
         return $data;
     }
 
+    public function GetSliceFromTable(string $table, int $offset, int $chunk_size = 200):stdClass {
+        $sql = $this->newQuery(sprintf('
+            SELECT *
+            FROM %s
+            LIMIT %d OFFSET %s
+        ', $table, $chunk_size, $offset));
+        $Chunk = $sql->Execute();
+        $result = new stdClass();
+        $Columns = [];
+        $Data = [];
+        foreach($Chunk as $row) {
+            $Data[] = array_values($row);
+        }
+        if(count($Chunk) > 0) {
+            foreach($Chunk[0] as $key => $value) {
+                $Columns[] = ['Name' => $key, 'Type' => gettype($value)];
+            }
+        }
+        $sql->close();
+
+        $result->Columns = $Columns;
+        $result->Data = $Data;
+        return $result;
+    } 
+
     public function GetSectionData(string $section, string $requested_data):stdClass {
         $data = new stdClass();
         $sections = [ 'TABLES' => 'TABLE', 'PROCEDURES' => 'PROCEDURE', 'FUNCTIONS' => 'FUNCTION'];
 
         if(in_array(strtoupper($section), ['TABLES'])) $data->SCHEMA = $this->GetSchema($requested_data);
         $data->DDL = $this->GetDDL($sections[strtoupper($section)], $requested_data);
+        if(in_array(strtoupper($section), ['TABLES'])) $data->DATA = $this->GetSliceFromTable($requested_data, 0, 50);
         
-
         return $data;
     }
 

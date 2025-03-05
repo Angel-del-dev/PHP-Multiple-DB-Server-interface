@@ -49,4 +49,5 @@ class DB {
     public function GetDropDatabasePrefix():string { return $this->connection->GetDropDatabasePrefix(); }
     public function GetDatabaseInfo():stdClass { return $this->connection->GetDatabaseInfo(); }
     public function GetSectionData(string $section, string $requested_data):stdClass { return $this->connection->GetSectionData($section, $requested_data); }
+    public function GetSliceFromTable(string $tablename, int $offset, string $chunk_size):stdClass { return $this->connection->GetSliceFromTable($tablename, $offset, $chunk_size); }
 }
