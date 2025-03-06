@@ -247,6 +247,7 @@ class MysqlPdo {
             FROM %s
             LIMIT %d OFFSET %s
         ', $table, $chunk_size, $offset));
+       
         $Chunk = $sql->Execute();
         $result = new stdClass();
         $Columns = [];

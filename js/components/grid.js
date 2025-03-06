@@ -4,10 +4,10 @@ import { Alert } from "./alerts.js";
 // TODO Create grid footer to display information and have controls to modify the grid in real time
 
 class Grid {
-    #columns_info; #data; #allow_html_rendering;
+    #columns_info; data; #allow_html_rendering;
     constructor({ columns_info = [] }) {
         this.#columns_info = columns_info;
-        this.#data = [];
+        this.data = [];
         this.#allow_html_rendering = false;
         this.tablename = null;
         this.MountRoute = null;
@@ -19,7 +19,7 @@ class Grid {
 
     AllowHtmlRendering() { this.#allow_html_rendering = true; }
 
-    AddRows(data) { this.#data = data; }
+    AddRows(data) { this.data = data; }
 
     FetchTableDataOnFinished(Database, tablename, mountroute) {
         this.tablename = tablename; 
@@ -27,25 +27,61 @@ class Grid {
         this.Database = Database;
     }
 
+    CreateFooter(footer) {
+        const input_chunk_size = document.createElement('input');
+        input_chunk_size.type = 'text';
+        input_chunk_size.placeholder = 'Chunk size';
+        input_chunk_size.value = this.ChunkSize;
+        input_chunk_size.style.width = '10vmin';
+
+        const self = this;
+        input_chunk_size.addEventListener('keydown', e => {
+            if(!/^\d+$/.test(e.key)) e.preventDefault();
+        });
+        input_chunk_size.addEventListener('change', e => {
+            if(e.target.value === '') e.target.value = '0';
+
+            self.ChunkSize = parseInt(e.target.value);
+            self.Offset = -1;
+            self.data = [];
+            const table = footer.closest('.full-grid-wrapper').querySelector('table');
+            table.querySelector('tbody').innerHTML = '';
+            InfiniteScroll(table, self);
+        });
+
+        footer.append(input_chunk_size);
+    }
+
     Draw(container_node) {
         this.container_node = container_node;
+        this.container_node.classList.add('full-grid-wrapper');
         this.container_node.innerHTML = '';
         const self = this;
+
+        const grid_wrapper = document.createElement('div');
+        grid_wrapper.classList.add('grid-wrapper');
+
         const table = document.createElement('table');
         table.classList.add('grid');
         table.append(create_grid_header(self, this.#columns_info));
-        table.append(create_grid_values(this.#columns_info, this.#data, { allow_html_rendering: this.#allow_html_rendering }));
+        table.append(create_grid_values(this.#columns_info, this.data, { allow_html_rendering: this.#allow_html_rendering }));
 
-        container_node.append(table);
+        grid_wrapper.append(table);
 
-        this.container_node.addEventListener('scroll', e => {
-            const element = container_node;
+        grid_wrapper.addEventListener('scroll', e => {
+            const element = grid_wrapper;
             const AmountScrolled = Math.abs(element.scrollHeight - element.clientHeight - element.scrollTop);
-            
             if(self.tablename === null) return;
-            if(AmountScrolled > 0) return;
-            InfiniteScroll(e, self);
+            if(AmountScrolled >= 1) return;
+            InfiniteScroll(e.target, self);
         });
+
+        const footer = document.createElement('div');
+        footer.classList.add('grid-footer');
+
+        this.CreateFooter(footer);
+
+        this.container_node.append(grid_wrapper, footer);
     }
 
     ReOrder(index) {
@@ -58,7 +94,7 @@ class Grid {
             }
         });
 
-        this.#data.sort((a, b) => {
+        this.data.sort((a, b) => {
             if(this.#columns_info[index].order === 0) {
                 return a[index] > b[index] ? 1 : -1;
             } else {
@@ -70,7 +106,7 @@ class Grid {
     }
 }
 
-const InfiniteScroll = async (e, self) => {
+const InfiniteScroll = async (target, self) => {
     const { code, message, Data } = await FetchPromise(
         self.MountRoute, 
         { 
@@ -79,8 +115,7 @@ const InfiniteScroll = async (e, self) => {
         }
     );
     if(code != 0) return Alert({ text: message });
-
-    redraw_grid_values(e.target.querySelector('tbody'), { rows: Data.Data, columns: Data.Columns });
+    redraw_grid_values(target.querySelector('tbody'), { rows: Data.Data, columns: Data.Columns });
 }
 
 const change_table_order = (event, grid_obj) => {
