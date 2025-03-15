@@ -66,18 +66,30 @@ try {
             $result['Charsets'] = $db->GetCharsets();
         break;
         case 'CREATEDATABASE':
+            $DB_Obj = new stdClass();
+            $DB_Obj->Host = 'localhost';
+            $DB_Obj->Name = uniqid();
+            $DB_Obj->Port = 3303;
+            $DB_Obj->User = uniqid();
+            $DB_Obj->Password = uniqid();
+
             $db = new DB($fields->database_type);
-            $db_name = $db->CreateDatabase($fields->database_collation);
+            $db->CreateDatabase($fields->database_collation, $DB_Obj);
 
             $db_parent = new DB();
             $sql = $db->newQuery("
                 INSERT INTO DB_BY_HOST
-                (DB_NAME, DB_TYPE, WEB_DOMAIN)
+                (DB_NAME, DB_TYPE, WEB_DOMAIN, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD)
                 VALUES
-                (:DB_NAME, :DB_TYPE, '')
+                (:DB_NAME, :DB_TYPE, :WEB_DOMAIN, :DB_HOST, :DB_PORT, :DB_USER, :DB_PASSWORD)
             ");
-            $sql->params->DB_NAME = $db_name;
+            $sql->params->DB_NAME = $DB_Obj->Name;
             $sql->params->DB_TYPE = $fields->database_type;
+            $sql->params->WEB_DOMAIN = '';
+            $sql->params->DB_HOST = $DB_Obj->Host;
+            $sql->params->DB_PORT = $DB_Obj->Port;
+            $sql->params->DB_USER = $DB_Obj->User;
+            $sql->params->DB_PASSWORD = $DB_Obj->Password;
             $sql->Execute();
             $sql->close();
         break;

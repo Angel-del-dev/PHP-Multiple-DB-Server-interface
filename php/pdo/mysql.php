@@ -81,15 +81,27 @@ class MysqlPdo {
         return $collations;
     }
 
-    public function CreateDatabase(string $collation):string {
-        $db_name = uniqid();
+    public function CreateDatabase(string $collation, stdClass $DB_Obj):void {
 
         $sql = $this->newQuery(sprintf("
             CREATE DATABASE %s COLLATE %s
-        ", $db_name, $collation));
+        ", $DB_Obj->Name, $collation));
         $sql->Execute();
         $sql->close();
-        return $db_name;
+
+
+        $sql = $this->newQuery(sprintf("CREATE USER :USER@:HOST IDENTIFIED BY :PASSWORD", $DB_Obj->Name));
+        $sql->params->USER = $DB_Obj->User;
+        $sql->params->HOST = '%';
+        $sql->params->PASSWORD = $DB_Obj->Password;
+        $sql->Execute();
+        $sql->Close();
+        
+        $sql = $this->newQuery(sprintf("GRANT ALL PRIVILEGES ON %s.* To :USER@:HOST", $DB_Obj->Name));
+        $sql->params->USER = $DB_Obj->User;
+        $sql->params->HOST = '%';
+        $sql->Execute();
+        $sql->Close();
     }
 
     public function DropDatabase(string $database):void {

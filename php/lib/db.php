@@ -42,7 +42,7 @@ class DB {
     // Inner functions
     public function GetCollations():array { return $this->connection->GetCollations(); }
     public function GetCharsets():array { return $this->connection->GetCharsets(); }
-    public function CreateDatabase(string $collation):string { return $this->connection->CreateDatabase($collation); }
+    public function CreateDatabase(string $collation, stdClass $DB_Obj):void { $this->connection->CreateDatabase($collation, $DB_Obj); }
     public function DropDatabase(string $database):void { $this->connection->DropDatabase($database); }
     public function CheckUnauthorizedQueryStrings(string $queryString):string { return $this->connection->CheckUnauthorizedQueryStrings($queryString); }
     public function GetCreateDatabasePrefix():string { return $this->connection->GetCreateDatabasePrefix(); }
