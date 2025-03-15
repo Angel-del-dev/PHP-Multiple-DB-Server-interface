@@ -1,8 +1,6 @@
 import { FetchPromise } from "../lib/utils.js";
 import { Alert } from "./alerts.js";
 
-// TODO Create grid footer to display information and have controls to modify the grid in real time
-
 class Grid {
     #columns_info; data; #allow_html_rendering;
     constructor({ columns_info = [] }) {

@@ -34,8 +34,6 @@ function GetDatabaseInfo(int $Code, array &$result):DB|null {
 
 $result = [ 'code' => 0, 'message' => '' ];
 
-// TODO Rework api system to be inside of a api/ directory with specific cases
-
 try {
     $params = Parse::Request();
     $fields = $params->fields;
