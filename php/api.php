@@ -5,17 +5,31 @@ if(!$_REQUEST) header('Location: /');
 require_once(__DIR__.'../lib/parse.php');
 require_once(__DIR__.'../lib/db.php');
 
-function GetDatabaseInfo(int $Code):array {
+function GetDatabaseInfo(int $Code, array &$result):DB|null {
     $db = new DB();
     $sql = $db->newQuery('
-        SELECT *
+        SELECT 
+            DB_CODE, DB_NAME, DB_TYPE,
+            WEB_DOMAIN, DB_HOST, DB_PORT,
+            DB_USER, DB_PASSWORD
         FROM DB_BY_HOST
         WHERE DB_CODE = :DB_CODE
     ');
     $sql->params->DB_CODE = $Code;
     $Data = $sql->Execute();
     $sql->close();
-    return $Data;
+    if(count($Data) === 0) {
+        $result = ['code' => 1, 'message' => 'The given database was not found'];
+        return null;
+    }
+    $Row = $Data[0];
+    $db = new DB($Row['DB_TYPE']);
+    $db->setCredentials(
+        $Row['DB_HOST'], $Row['DB_NAME'], 
+        $Row['DB_USER'], $Row['DB_PASSWORD']
+    );
+
+    return $db;
 }
 
 $result = [ 'code' => 0, 'message' => '' ];
@@ -122,30 +136,10 @@ try {
             $sql->close();
         break;
         case 'EXECUTE':
+            $client_db = GetDatabaseInfo($fields->DB, $result);
+            if($result['code'] !== 0) break;
+
             $upper_request = strtoupper($fields->Request);
-
-            $parent_db = new DB();
-            $sql = $parent_db->newQuery('
-                SELECT *
-                FROM DB_BY_HOST
-                WHERE DB_CODE = :DB_CODE
-            ');
-            $sql->params->DB_CODE = $fields->DB;
-            $Data = $sql->Execute();
-            if(count($Data) === 0) {
-                $result = [
-                    'code' => 1,
-                    'message' => 'The given database does not exist'
-                ];
-                break;
-            }
-
-            $DB_TYPE = $Data[0]['DB_TYPE'];
-            $DB_NAME = $Data[0]['DB_NAME'];
-            $sql->close();
-            
-            $client_db = new DB($DB_TYPE);
-            $client_db->setConnectionParameter('dbname', $DB_NAME);
 
             $error_msg = $client_db->CheckUnauthorizedQueryStrings($upper_request);
             if(strlen(trim($error_msg)) > 0) {
@@ -183,36 +177,18 @@ try {
             $result['Result'] = $Result_data;
         break;
         case 'GETDATABASEINFO':
-            $Data = GetDatabaseInfo($fields->Database);
-            if(count($Data) === 0) {
-                $result = ['code' => 1, 'message' => 'The given database was not found'];
-                break;
-            }
-            $Row = $Data[0];
-            $db = new DB($Row['DB_TYPE']);
-            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $db = GetDatabaseInfo($fields->Database, $result);
+            if($result['code'] !== 0) break;
             $result['Info'] = $db->GetDatabaseInfo();
         break;
         case 'SHOWSECTIONINFO':
-            $Data = GetDatabaseInfo($fields->Database);
-            if(count($Data) === 0) {
-                $result = ['code' => 1, 'message' => 'The given database was not found'];
-                break;
-            }
-            $Row = $Data[0];
-            $db = new DB($Row['DB_TYPE']);
-            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $db = GetDatabaseInfo($fields->Database, $result);
+            if($result['code'] != 0) break;
             $result['Info'] = $db->GetSectionData($fields->Section, $fields->Data);
         break;
         case 'GETSLICEFROMTABLE':
-            $Data = GetDatabaseInfo($fields->Database);
-            if(count($Data) === 0) {
-                $result = ['code' => 1, 'message' => 'The given database was not found'];
-                break;
-            }
-            $Row = $Data[0];
-            $db = new DB($Row['DB_TYPE']);
-            $db->setConnectionParameter('dbname', $Row['DB_NAME']);
+            $db = GetDatabaseInfo($fields->Database, $result);
+            if($result['code'] !== 0) break;
             $result['Data'] = $db->GetSliceFromTable($fields->Table, $fields->Offset, $fields->ChunkSize);
         break;
         default:

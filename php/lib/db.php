@@ -16,6 +16,7 @@ class DB {
         $this->env->dbname = $dbname;
         $this->env->dbuser = $dbuser;
         $this->env->dbpassword = $dbpassword;
+        $this->setupConnection();
     }
 
     public function setConnectionParameter(string $key, string $value):void {
