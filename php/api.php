@@ -82,8 +82,8 @@ try {
             $DB_Obj->Host = 'localhost';
             $DB_Obj->Name = uniqid();
             $DB_Obj->Port = 3303;
-            $DB_Obj->User = uniqid();
-            $DB_Obj->Password = uniqid();
+            $DB_Obj->User = $DB_Obj->Name;
+            $DB_Obj->Password = $fields->database_password;
 
             $db = new DB($fields->database_type);
             $db->CreateDatabase($fields->database_collation, $DB_Obj);

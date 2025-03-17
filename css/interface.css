@@ -408,6 +408,7 @@ input {
     border: 1px solid lightgray;
     width: 100%;
     padding: 5px;
+    border-radius: var(--app-border-radius);
 }
 
 input:focus {

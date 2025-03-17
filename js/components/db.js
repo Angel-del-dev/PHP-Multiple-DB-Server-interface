@@ -1,6 +1,6 @@
 import { supported_database_types } from "../lib/constants.js";
 import { Alert, Confirm } from "./alerts.js";
-import { Combobox, CustomImage } from "./all.js";
+import { Combobox, CustomImage, Password } from "./all.js";
 import { _create_generic_header, modal, _create_generic_footer } from "./modal.js";
 import { FetchPromise } from "../lib/utils.js";
 import { RefreshDatabases } from "../api/db.js";
@@ -56,12 +56,36 @@ const create_db_creation_footer = (MountRoute, AppId) => {
     const confirm_create_db = async () => {
         const database_type = document.getElementById('dbcreation_type').value.toLowerCase();
         const database_collation = document.getElementById('db_creation_collations').value.toLowerCase();
-        const { code, message } = await FetchPromise(MountRoute, { action: 'CREATEDATABASE', fields: { database_type, database_collation } });
+
+        const database_password = document.getElementById('Password').value.trim();
+        const database_repeat_password = document.getElementById('RepeatPassword').value.trim();
+
+        if(database_password === '' || database_repeat_password === '') return Alert({ text: 'A password must be specified' });
+        if(database_password !== database_repeat_password) return Alert({ text: 'Password and Confirm password must be identical' });
+
+        const { code, message } = await FetchPromise(MountRoute, { action: 'CREATEDATABASE', fields: { database_password, database_type, database_collation } });
         if(code != 0) return Alert({ text: message });
         RefreshDatabases(MountRoute, AppId);
     };
 
     return _create_generic_footer('fa-solid fa-check', 'Confirmar', confirm_create_db);
+};
+
+const create_db_passwords = () => {
+    const container = document.createElement('div');
+    container.style.padding = '5px 0';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'flex-start';
+    container.style.alignItems = 'flex-start';
+    container.style.gap = '5px';
+    container.style.flexDirection = 'column';
+    const Pass = Password({ Name: 'Password', Placeholder: 'Password' });
+    const RepeatPass = Password({ Name: 'RepeatPassword', Placeholder: 'Confirm password' });
+
+    Pass.style.width = '50%';
+    RepeatPass.style.width = Pass.style.width;
+    container.append(Pass, RepeatPass);
+    return container;
 };
 
 const create_db_creation_modal = (MountRoute, AppId) => {
@@ -72,6 +96,7 @@ const create_db_creation_modal = (MountRoute, AppId) => {
     modal_body.append(
         create_db_type_row(MountRoute),
         create_db_type_collations(),
+        create_db_passwords(),
         create_db_creation_footer(MountRoute, AppId)
     );
 

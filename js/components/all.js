@@ -19,6 +19,21 @@ export const Combobox = ({
     return node;
 };
 
+export const Password = ({ 
+    Name, 
+    Value = '',
+    Placeholder = ''
+}) => {
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.id = Name;
+    input.name = input.id;
+    input.value = Value;
+    input.placeholder = Placeholder;
+
+    return input;
+};
+
 export const CustomImage = ({
     square = false,
     src = null
