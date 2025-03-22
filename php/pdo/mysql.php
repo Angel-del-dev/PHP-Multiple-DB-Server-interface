@@ -150,8 +150,9 @@ class MysqlPdo {
         return $result;
     }
 
-    public function GetAllProcedures():array {
-        $sql = $this->newQuery('SHOW PROCEDURE STATUS');
+    public function GetAllProcedures(string $database):array {
+        $sql = $this->newQuery('SHOW PROCEDURE STATUS WHERE DB = :DB');
+        $sql->params->DB = $database;
         $Data = $sql->Execute();
         $sql->close();
         $result = [];
@@ -159,8 +160,9 @@ class MysqlPdo {
         return $result;
     }
 
-    public function GetAllFunctions():array {
-        $sql = $this->newQuery('SHOW FUNCTION STATUS');
+    public function GetAllFunctions(string $database):array {
+        $sql = $this->newQuery('SHOW FUNCTION STATUS WHERE DB = :DB');
+        $sql->params->DB = $database;
         $Data = $sql->Execute();
         $sql->close();
         $result = [];
@@ -168,12 +170,14 @@ class MysqlPdo {
         return $result;
     }
 
-    public function GetAllTriggers():array {
+    public function GetAllTriggers(string $database):array {
         // ACTION_STATEMENT -> trigger DDL
         $sql = $this->newQuery('
             SELECT TRIGGER_NAME
             FROM INFORMATION_SCHEMA.TRIGGERS
+            WHERE TRIGGER_SCHEMA = :TRIGGER_SCHEMA
         ');
+        $sql->params->TRIGGER_SCHEMA = $database;
         $Data = $sql->Execute();
         $sql->close();
         $result = [];
@@ -181,12 +185,17 @@ class MysqlPdo {
         return $result;
     }
 
-    public function GetDatabaseInfo():stdClass {
+    public function GetDBInformation(string $db):array {
+        return [];
+    }
+
+    public function GetDatabaseInfo(string $database):stdClass {
         $Info = new stdClass();
         $Info->Tables = $this->GetAllTables();
-        $Info->Procedures = $this->GetAllProcedures();
-        $Info->Functions = $this->GetAllFunctions();
-        $Info->Triggers = $this->GetAllTriggers();
+        $Info->Procedures = $this->GetAllProcedures($database);
+        $Info->Functions = $this->GetAllFunctions($database);
+        $Info->Triggers = $this->GetAllTriggers($database);
+        $Info->Panel = $this->GetDbInformation($database);
 
         return $Info;
     }

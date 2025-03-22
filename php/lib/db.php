@@ -48,7 +48,7 @@ class DB {
     public function CheckUnauthorizedQueryStrings(string $queryString):string { return $this->connection->CheckUnauthorizedQueryStrings($queryString); }
     public function GetCreateDatabasePrefix():string { return $this->connection->GetCreateDatabasePrefix(); }
     public function GetDropDatabasePrefix():string { return $this->connection->GetDropDatabasePrefix(); }
-    public function GetDatabaseInfo():stdClass { return $this->connection->GetDatabaseInfo(); }
+    public function GetDatabaseInfo(string $database):stdClass { return $this->connection->GetDatabaseInfo($database); }
     public function GetSectionData(string $section, string $requested_data):stdClass { return $this->connection->GetSectionData($section, $requested_data); }
     public function GetSliceFromTable(string $tablename, int $offset, string $chunk_size):stdClass { return $this->connection->GetSliceFromTable($tablename, $offset, $chunk_size); }
 }

@@ -28,7 +28,7 @@ function GetDatabaseInfo(int $Code, array &$result):DB|null {
         $Row['DB_HOST'], $Row['DB_NAME'], 
         $Row['DB_USER'], $Row['DB_PASSWORD']
     );
-
+    $result['DB_NAME'] = $Row['DB_NAME'];
     return $db;
 }
 
@@ -177,7 +177,7 @@ try {
         case 'GETDATABASEINFO':
             $db = GetDatabaseInfo($fields->Database, $result);
             if($result['code'] !== 0) break;
-            $result['Info'] = $db->GetDatabaseInfo();
+            $result['Info'] = $db->GetDatabaseInfo($result['DB_NAME']);
         break;
         case 'SHOWSECTIONINFO':
             $db = GetDatabaseInfo($fields->Database, $result);
@@ -198,5 +198,5 @@ try {
     $result['code'] = -1;
     $result['message'] = $e->getMessage();
 }
-
+unset($result['DB_NAME']);
 echo json_encode($result);
