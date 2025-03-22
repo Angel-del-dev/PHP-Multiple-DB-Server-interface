@@ -185,8 +185,31 @@ class MysqlPdo {
         return $result;
     }
 
-    public function GetDBInformation(string $db):array {
-        return [];
+    public function GetDBInformation(string $db):stdClass {
+        $sql = $this->newQuery('
+            SELECT TABLE_NAME, TABLE_ROWS, TABLE_COLLATION, TABLE_TYPE
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = :TABLE_SCHEMA
+        ');
+        $sql->params->TABLE_SCHEMA = $db;
+        $Rows = $sql->Execute();
+        $sql->Close();
+        
+        if(count($Rows) === 0) return [];
+        $data = [];
+        foreach($Rows as $row) {
+            $data[] = array_values($row);
+        }
+
+        $columns_definition = [];
+        foreach($Rows[0] as $key => $value) {
+            $columns_definition[] = ['Name' => $key, 'Type' => gettype($value)];
+        }
+
+        $result = new stdClass();
+        $result->Data = $data;
+        $result->Columns = $columns_definition;
+        return $result;
     }
 
     public function GetDatabaseInfo(string $database):stdClass {

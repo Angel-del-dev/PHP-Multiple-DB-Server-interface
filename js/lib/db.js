@@ -2,6 +2,8 @@ import { Alert } from "../components/alerts.js";
 import { create_section_preview } from "../components/section.js";
 import { logos } from "./constants.js";
 import { FetchPromise } from "./utils.js";
+import { create_tab } from "../components/tabs.js";
+import { create_grid } from "../components/grid.js";
 
 const create_logo_image = (MountRoute, Type) => {
     const logo_node = document.createElement('div');
@@ -34,6 +36,10 @@ export const get_db_info_nodes = (MountRoute, Info) => {
     const ul = document.createElement('ul');
     ul.classList.add('info-list');
     Object.keys(Info).forEach((k, _i) => {
+        if(k === 'Panel') {
+            InvokeDBInfo(Info[k]);
+            return true;
+        }
         const li = document.createElement('li');
     
         const SectionName = document.createElement('span');
@@ -88,3 +94,11 @@ const show_section_info = async (MountRoute, li) => {
 
     create_section_preview(Database, Data, Info, MountRoute);
 };
+
+const InvokeDBInfo = ({Data, Columns}) => {
+    const node = create_tab('DB Info');
+    node.style.backgroundColor = 'white';
+    const grid = create_grid({ columns_info: Columns });
+    grid.AddRows(Data);
+    grid.Draw(node);
+}
