@@ -3,8 +3,8 @@
     height: 100%;
 
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 5px;
     padding: 10px 0;
 }
@@ -16,7 +16,6 @@
 
 .dbinterface__db_selector {
     border: 1px solid lightgray;
-    flex-grow: 1;
     max-width: 200px;
     min-width: 200px;
     user-select: none;
@@ -292,7 +291,7 @@ div.full-grid-wrapper {
 
 div.grid-wrapper {
     width: 100%;
-    overflow-y: auto;
+    overflow-y: auto; overflow-x: auto;
     flex-grow: 4;
 }
 
@@ -365,7 +364,7 @@ div.grid-footer {
 .dbinterface-section-navigator {
     min-width: 100px;
     max-width: 100px;
-    flex: 1;
+    /* flex: 1; */
     border-right: 1px solid lightgray;
 
     display: flex;
@@ -375,7 +374,7 @@ div.grid-footer {
 }
 
 .dbinterface-section-navigator-body {
-    flex: 3;
+    flex: 1;
 }
 
 .dbinterface-section-navigator > span {
